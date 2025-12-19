@@ -39,24 +39,16 @@ Wait 5-10 seconds for initialization.
 
 ### 3. Discover operators dynamically
 ```python
-# List all brain operators
 list_operators(builtin_only=False)
-
-# Get schema for specific operator
 get_operator_schema(operator_uri="@voxel51/brain/compute_similarity")
 ```
 
 ### 4. Compute embeddings before finding duplicates
 ```python
-# ✅ CORRECT
 execute_operator(
     operator_uri="@voxel51/brain/compute_similarity",
-    params={"brain_key": "img_sim"}
+    params={"brain_key": "img_sim", "model": "mobilenet-v2-imagenet-torch"}
 )
-# Then find duplicates
-
-# ❌ WRONG - Cannot find duplicates without embeddings
-execute_operator(operator_uri="@voxel51/brain/find_duplicates")
 ```
 
 ### 5. Close app when done
@@ -68,16 +60,12 @@ close_app()
 
 ### Step 1: Setup
 ```python
-# Set context
 set_context(dataset_name="my-dataset")
-
-# Launch app (required for brain operators)
 launch_app()
 ```
 
 ### Step 2: Verify Brain Plugin
 ```python
-# Check if brain plugin is available
 list_plugins(enabled=True)
 
 # If not installed:
@@ -90,19 +78,13 @@ enable_plugin(plugin_name="@voxel51/brain")
 
 ### Step 3: Discover Brain Operators
 ```python
-# List all available operators
 list_operators(builtin_only=False)
-
-# Get schema for compute_similarity
 get_operator_schema(operator_uri="@voxel51/brain/compute_similarity")
-
-# Get schema for find_duplicates
-get_operator_schema(operator_uri="@voxel51/brain/find_duplicates")
+get_operator_schema(operator_uri="@voxel51/brain/find_near_duplicates")
 ```
 
 ### Step 4: Compute Similarity
 ```python
-# Execute operator to compute embeddings
 execute_operator(
     operator_uri="@voxel51/brain/compute_similarity",
     params={
@@ -112,99 +94,113 @@ execute_operator(
 )
 ```
 
-**Note:** This takes several minutes depending on dataset size.
-
-### Step 5: Find Duplicates
+### Step 5: Find Near Duplicates
 ```python
-# Find near-duplicates (95% similarity)
 execute_operator(
-    operator_uri="@voxel51/brain/find_duplicates",
+    operator_uri="@voxel51/brain/find_near_duplicates",
     params={
-        "brain_key": "img_duplicates",
-        "thresh": 0.95,
-        "method": "representative"
+        "similarity_index": "img_duplicates",
+        "threshold": 0.3
     }
 )
 ```
 
-**Threshold guidelines:**
-- `1.0` = Exact duplicates only
-- `0.95` = Near duplicates (recommended)
-- `0.90` = Similar images
-- `0.85` = Loosely similar
+**Threshold guidelines (distance-based, lower = more similar):**
+- `0.1` = Very similar (near-exact duplicates)
+- `0.3` = Near duplicates (recommended default)
+- `0.5` = Similar images
+- `0.7` = Loosely similar
 
-### Step 6: Review Results
-```python
-# Get dataset summary
-get_dataset_summary(dataset_name="my-dataset")
+This operator creates two saved views automatically:
+- `near duplicates`: all samples that are near duplicates
+- `representatives of near duplicates`: one representative from each group
 
-# Create view of duplicates
-set_context(
-    dataset_name="my-dataset",
-    view_stages=[
-        {"$match": {"duplicates": {"$exists": True, "$ne": []}}}
-    ]
-)
+### Step 6: View Duplicates in App
+
+After finding duplicates, direct the user to view them in the FiftyOne App:
+
+**Option A: Use saved views (created automatically)**
 ```
+Open http://localhost:5151/ and select the "near duplicates" saved view
+```
+
+**Option B: Filter by near_dup_id field**
+The operator adds a `near_dup_id` field to samples. Samples with the same ID are duplicates of each other.
 
 ### Step 7: Delete Duplicates
+
+**Option A: Use deduplicate operator (keeps one representative per group)**
 ```python
-# After reviewing, delete duplicate samples
 execute_operator(
-    operator_uri="@voxel51/utils/delete_samples",
-    params={"target": "current_view"}
+    operator_uri="@voxel51/brain/deduplicate_near_duplicates",
+    params={}
 )
 ```
+
+**Option B: Manual deletion from App UI**
+1. Open http://localhost:5151/
+2. Load the "near duplicates" saved view
+3. Select samples to delete
+4. Use the delete action in the App
 
 ### Step 8: Clean Up
 ```python
-# Close the app
 close_app()
-
-# Verify results
-set_context(dataset_name="my-dataset")
-get_dataset_summary(dataset_name="my-dataset")
 ```
+
+## Available Brain Operators for Duplicates
+
+Use `list_operators()` to discover and `get_operator_schema()` to see parameters:
+
+| Operator | Description |
+|----------|-------------|
+| `@voxel51/brain/compute_similarity` | Compute embeddings and similarity index |
+| `@voxel51/brain/find_near_duplicates` | Find near-duplicate samples |
+| `@voxel51/brain/deduplicate_near_duplicates` | Delete duplicates, keep representatives |
+| `@voxel51/brain/find_exact_duplicates` | Find exact duplicate media files |
+| `@voxel51/brain/deduplicate_exact_duplicates` | Delete exact duplicates |
+| `@voxel51/brain/compute_uniqueness` | Compute uniqueness scores |
 
 ## Common Use Cases
 
 ### Use Case 1: Remove Exact Duplicates
-For accidentally duplicated files:
+For accidentally duplicated files (identical bytes):
 ```python
 set_context(dataset_name="my-dataset")
 launch_app()
 
 execute_operator(
-    operator_uri="@voxel51/brain/compute_similarity",
-    params={"brain_key": "exact"}
+    operator_uri="@voxel51/brain/find_exact_duplicates",
+    params={}
 )
 
 execute_operator(
-    operator_uri="@voxel51/brain/find_duplicates",
-    params={"brain_key": "exact", "thresh": 1.0}
+    operator_uri="@voxel51/brain/deduplicate_exact_duplicates",
+    params={}
 )
 
 close_app()
 ```
 
-### Use Case 2: Find Unique Samples
-Select diverse subset of N unique images:
+### Use Case 2: Find Near Duplicates
+For visually similar but not identical images:
 ```python
 set_context(dataset_name="my-dataset")
 launch_app()
 
 execute_operator(
     operator_uri="@voxel51/brain/compute_similarity",
-    params={"brain_key": "unique"}
+    params={"brain_key": "near_dups", "model": "mobilenet-v2-imagenet-torch"}
 )
 
 execute_operator(
-    operator_uri="@voxel51/brain/find_unique",
-    params={
-        "brain_key": "unique",
-        "num_samples": 1000,
-        "method": "greedy"
-    }
+    operator_uri="@voxel51/brain/find_near_duplicates",
+    params={"similarity_index": "near_dups", "threshold": 0.3}
+)
+
+execute_operator(
+    operator_uri="@voxel51/brain/deduplicate_near_duplicates",
+    params={}
 )
 
 close_app()
@@ -233,25 +229,16 @@ execute_operator(
 close_app()
 ```
 
-## Key Brain Operators
-
-Use `get_operator_schema()` to see full parameters:
-
-- `@voxel51/brain/compute_similarity` - Compute embeddings and similarity index
-- `@voxel51/brain/find_duplicates` - Find duplicate/near-duplicate samples
-- `@voxel51/brain/find_unique` - Find diverse unique samples
-- `@voxel51/brain/sort_by_similarity` - Sort by similarity to query
-- `@voxel51/brain/compute_visualization` - Create 2D/3D visualizations
-
 ## Troubleshooting
 
 **Error: "No executor available"**
-- Cause: FiftyOne App not running
-- Solution: Call `launch_app()` and wait 10 seconds
+- Cause: Delegated operators require the App executor for UI triggers
+- Solution: Direct user to App UI to view results and complete deletion manually
+- Affected operators: `find_near_duplicates`, `deduplicate_near_duplicates`
 
 **Error: "Brain key not found"**
 - Cause: Embeddings not computed
-- Solution: Run `compute_similarity` first
+- Solution: Run `compute_similarity` first with a `brain_key`
 
 **Error: "Operator not found"**
 - Cause: Brain plugin not installed
@@ -259,10 +246,17 @@ Use `get_operator_schema()` to see full parameters:
 
 **Error: "Missing dependency" (e.g., torch, tensorflow)**
 - The MCP server detects missing dependencies automatically
-- You'll receive structured error with package name and install command
-- **Auto-install**: Offer to run the install command for the user
-- Example: `pip install torch torchvision`
-- After installation, retry the operator
+- Response includes `missing_package` and `install_command`
+- Example response:
+  ```json
+  {
+    "error_type": "missing_dependency",
+    "missing_package": "torch",
+    "install_command": "pip install torch"
+  }
+  ```
+- Offer to run the install command for the user
+- After installation, restart MCP server and retry
 
 **Similarity computation is slow**
 - Use faster model: `mobilenet-v2-imagenet-torch`
@@ -271,11 +265,11 @@ Use `get_operator_schema()` to see full parameters:
 
 ## Best Practices
 
-1. **Start with high threshold** (0.95) and adjust lower as needed
-2. **Always review before deleting** - Use views to inspect duplicates
-3. **Use representative method** - Keeps highest quality samples
+1. **Discover dynamically** - Use `list_operators()` and `get_operator_schema()` to get current operator names and parameters
+2. **Start with default threshold** (0.3) and adjust as needed
+3. **Review before deleting** - Direct user to App to inspect duplicates
 4. **Store embeddings** - Reuse for multiple operations via `brain_key`
-5. **Discover dynamically** - Use `list_operators()` and `get_operator_schema()`
+5. **Handle executor errors gracefully** - Guide user to App UI when needed
 
 ## Performance Notes
 
@@ -290,7 +284,6 @@ Use `get_operator_schema()` to see full parameters:
 
 ## Resources
 
-- Use `get_operator_schema()` to see operator parameters
 - [FiftyOne Brain Documentation](https://docs.voxel51.com/user_guide/brain.html)
 - [Brain Plugin Source](https://github.com/voxel51/fiftyone-plugins/tree/main/plugins/brain)
 

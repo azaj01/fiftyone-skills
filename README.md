@@ -60,7 +60,7 @@ Download [Claude Code](https://claude.com/product/claude-code) desktop app.
 In Claude Code chat:
 
 ```
-/plugin marketplace add voxel51/fiftyone-skills
+/plugin marketplace add AdonaiVera/fiftyone-skills
 ```
 
 ### Install a Skill
