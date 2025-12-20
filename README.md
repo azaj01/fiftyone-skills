@@ -10,114 +10,135 @@
 </p>
 </div>
 
-> Control FiftyOne datasets through AI assistants using SKILLS
+> Expert workflows for FiftyOne datasets powered by AI assistants
 
 ## Overview
 
-FiftyOne provides a powerful [MCP server](https://github.com/AdonaiVera/fiftyone-mcp-server) that allows AI assistants to interact with your computer vision datasets. Skills extend this functionality by packaging expert workflows that AI assistants can follow autonomously.
-
-With skills, you can teach your AI assistant to find duplicates, evaluate models, and explore datasets using natural language—all powered by FiftyOne's operator framework.
-
-## Installation
-
-As simple as:
-
-```shell
-pip install fiftyone
-```
-
-Then install the [FiftyOne MCP Server](https://github.com/AdonaiVera/fiftyone-mcp-server):
-
-```shell
-git clone https://github.com/AdonaiVera/fiftyone-mcp-server.git
-cd fiftyone-mcp-server
-poetry install
-```
-
-Configure the MCP server in your AI assistant (Claude, ChatGPT, etc.) and install the skills plugin.
+Skills are packaged workflows that teach AI assistants to perform complex computer vision tasks autonomously. Combined with the [FiftyOne MCP Server](https://github.com/AdonaiVera/fiftyone-mcp-server), you can find duplicates, run inference, and explore datasets using natural language.
 
 ## Available Skills
 
-<table>
-    <tr>
-        <th>Skill</th>
-        <th>Description</th>
-    </tr>
-    <tr>
-        <td><b><a href="find-duplicates/skills/fiftyone-find-duplicates/SKILL.md">Find Duplicates</a></b></td>
-        <td>Find and remove duplicate or near-duplicate images using brain similarity computation</td>
-    </tr>
-    <tr>
-        <td><b><a href="dataset-inference/skills/fiftyone-dataset-inference/SKILL.md">Dataset Inference</a></b></td>
-        <td>Create datasets from local directories, import labels (COCO, YOLO, VOC), and run model inference</td>
-    </tr>
-</table>
+| Skill | Description |
+|-------|-------------|
+| [**Find Duplicates**](find-duplicates/skills/fiftyone-find-duplicates/SKILL.md) | Find and remove duplicate images using brain similarity |
+| [**Dataset Inference**](dataset-inference/skills/fiftyone-dataset-inference/SKILL.md) | Import datasets (COCO, YOLO, VOC) and run model inference |
 
 ## Quick Start
 
-### Install Claude Code
+### Step 1: Install the MCP Server
 
-Download [Claude Code](https://claude.com/product/claude-code) desktop app.
-
-### Register Skills Marketplace
-
-In Claude Code chat:
-
+```bash
+pip install fiftyone-mcp-server
 ```
+
+### Step 2: Configure Your AI Tool
+
+<details>
+<summary><b>Claude Desktop</b></summary>
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "fiftyone": {
+      "command": "fiftyone-mcp"
+    }
+  }
+}
+```
+</details>
+
+<details>
+<summary><b>Claude Code</b></summary>
+
+```bash
+claude mcp add fiftyone -- fiftyone-mcp
+```
+</details>
+
+<details>
+<summary><b>Cursor</b></summary>
+
+Add to Cursor MCP settings:
+
+```json
+{
+  "fiftyone": {
+    "command": "fiftyone-mcp"
+  }
+}
+```
+</details>
+
+<details>
+<summary><b>VSCode</b></summary>
+
+Add to `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "fiftyone": {
+      "command": "fiftyone-mcp"
+    }
+  }
+}
+```
+</details>
+
+### Step 3: Install Skills (Claude Code)
+
+```bash
+# Register the skills marketplace
 /plugin marketplace add AdonaiVera/fiftyone-skills
-```
 
-### Install a Skill
-
-```
+# Install a skill
 /plugin install fiftyone-find-duplicates@fiftyone-skills
 ```
 
-### Use the Skill
+### Step 4: Use It
 
 ```
 Use the FiftyOne find duplicates skill to remove redundant images from my quickstart dataset
 ```
 
-Claude will automatically:
-1. Load the skill instructions
-2. Set the dataset context
-3. Launch the FiftyOne App
-4. Compute similarity embeddings
-5. Find and remove duplicates
-6. Clean up and report results
+Claude will automatically load the skill instructions and execute the full workflow.
 
 ## How Skills Work
 
-Skills are workflow packages that orchestrate FiftyOne MCP server tools:
+```
+┌─────────────────────────────────────────────────────────────┐
+│  FiftyOne MCP Server (16 tools)                            │
+│  • Dataset management (list, load, summarize)               │
+│  • Operator execution (80+ FiftyOne operators)              │
+│  • Plugin management (install, enable, discover)            │
+│  • Session control (launch/close App)                       │
+└─────────────────────────────────────────────────────────────┘
+                              ▲
+                              │ orchestrates
+                              │
+┌─────────────────────────────────────────────────────────────┐
+│  FiftyOne Skills (SKILL.md files)                          │
+│  • Step-by-step workflow instructions                       │
+│  • Key directives (ALWAYS/NEVER rules)                      │
+│  • Concrete examples and troubleshooting                    │
+└─────────────────────────────────────────────────────────────┘
+```
 
-**FiftyOne MCP Server** provides 16 low-level tools:
-- Dataset management (list, load, summarize)
-- Operator execution (80+ FiftyOne operators)
-- Plugin management (install, enable, discover)
-- Session control (launch/close App)
+## Skill Structure
 
-**FiftyOne Skills** provide high-level workflows:
-- Step-by-step instructions
-- Key directives (ALWAYS/NEVER rules)
-- Concrete examples
-- Troubleshooting guidance
-
-When you mention a skill, your AI assistant loads the `SKILL.md` instructions and uses MCP tools to complete the task autonomously.
-
-## Skill Architecture
-
-Each skill is a single markdown file with YAML frontmatter:
+Each skill is a markdown file with YAML frontmatter:
 
 ```
 find-duplicates/
 ├── plugin.json
 └── skills/
     └── fiftyone-find-duplicates/
-        └── SKILL.md          # Complete workflow instructions
+        └── SKILL.md
 ```
 
-**SKILL.md structure:**
+**SKILL.md format:**
 
 ```markdown
 ---
@@ -141,55 +162,24 @@ Step-by-step instructions
 Concrete use cases
 ```
 
-## Integration with FiftyOne
+## Contributing
 
-Skills assume the FiftyOne MCP server provides these tools:
+Want to create a skill?
 
-**Dataset Tools:**
-- `list_datasets`, `load_dataset`, `get_dataset_summary`
-
-**Operator Tools:**
-- `set_context`, `list_operators`, `get_operator_schema`, `execute_operator`
-
-**Plugin Tools:**
-- `list_plugins`, `download_plugin`, `enable_plugin`
-
-**Session Tools:**
-- `launch_app`, `close_app`, `get_session_info`
-
-Skills orchestrate these tools into complete workflows.
-
-## Contributing Your Own Skill
-
-Want to create a custom skill?
-
-1. Copy the `find-duplicates` folder and rename it
-2. Update `SKILL.md` frontmatter with name and description
-3. Write workflow instructions following FiftyOne patterns
+1. Fork this repository
+2. Copy an existing skill folder (e.g., `find-duplicates/`)
+3. Update `SKILL.md` with your workflow
 4. Update `.claude-plugin/marketplace.json`
 5. Test with your AI assistant
+6. Submit a Pull Request
 
-See the [find-duplicates SKILL.md](find-duplicates/skills/fiftyone-find-duplicates/SKILL.md) for a complete example.
+See [find-duplicates SKILL.md](find-duplicates/skills/fiftyone-find-duplicates/SKILL.md) for a complete example.
 
-## Installation Options
-
-### Claude Code
-
-**Prerequisites:** [Claude Code](https://claude.com/product/claude-code) desktop app
-
-Register marketplace (in Claude Code chat):
-```
-/plugin marketplace add voxel51/fiftyone-skills
-```
-
-Install skill:
-```
-/plugin install fiftyone-find-duplicates@fiftyone-skills
-```
+## Alternative Installation Methods
 
 ### Codex
 
-Codex identifies skills via `AGENTS.md`. Verify:
+Codex uses `AGENTS.md` for skill discovery:
 
 ```bash
 codex --ask-for-approval never "Summarize the current instructions."
@@ -197,29 +187,21 @@ codex --ask-for-approval never "Summarize the current instructions."
 
 ### Gemini CLI
 
-Install locally:
-
 ```bash
+# Install locally
 gemini extensions install . --consent
-```
 
-Or via GitHub:
-
-```bash
-gemini extensions install https://github.com/voxel51/fiftyone-skills.git --consent
+# Or via GitHub
+gemini extensions install https://github.com/AdonaiVera/fiftyone-skills.git --consent
 ```
 
 ## Resources
 
-- **Website**: https://fiftyone.ai
-- **Documentation**: https://docs.voxel51.com
-- **FiftyOne MCP Server**: https://github.com/AdonaiVera/fiftyone-mcp-server
-- **FiftyOne Plugins**: https://github.com/voxel51/fiftyone-plugins
-- **Claude Code Docs**: https://code.claude.com/docs/en/skills
-- **Community**: https://discord.gg/fiftyone-community
-
-## License
-
-Apache 2.0 - See [LICENSE](LICENSE) for details
+- [FiftyOne Documentation](https://docs.voxel51.com)
+- [FiftyOne MCP Server](https://github.com/AdonaiVera/fiftyone-mcp-server)
+- [PyPI Package](https://pypi.org/project/fiftyone-mcp-server/)
+- [MCP Registry](https://registry.modelcontextprotocol.io)
+- [FiftyOne Plugins](https://github.com/voxel51/fiftyone-plugins)
+- [Discord Community](https://discord.gg/fiftyone-community)
 
 Copyright 2017-2025, Voxel51, Inc.
