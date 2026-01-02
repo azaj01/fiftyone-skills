@@ -1,0 +1,21 @@
+{
+  "name": "fiftyone-embeddings-visualization",
+  "version": "1.0.0",
+  "description": "Visualize datasets in 2D using embeddings, find clusters, identify outliers, and color by metadata. Works with the FiftyOne MCP server.",
+  "author": {
+    "name": "Voxel51"
+  },
+  "repository": "https://github.com/voxel51/fiftyone-skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "fiftyone",
+    "computer-vision",
+    "embeddings",
+    "visualization",
+    "umap",
+    "tsne",
+    "clustering",
+    "outliers",
+    "dimensionality-reduction"
+  ]
+}

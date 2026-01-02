@@ -22,6 +22,7 @@ Skills are packaged workflows that teach AI assistants to perform complex comput
 |-------|-------------|
 | [**Find Duplicates**](find-duplicates/skills/fiftyone-find-duplicates/SKILL.md) | Find and remove duplicate images using brain similarity |
 | [**Dataset Inference**](dataset-inference/skills/fiftyone-dataset-inference/SKILL.md) | Import datasets (COCO, YOLO, VOC) and run model inference |
+| [**Embeddings Visualization**](embeddings-visualization/skills/fiftyone-embeddings-visualization/SKILL.md) | Visualize datasets in 2D, find clusters, identify outliers |
 
 ## Quick Start
 
@@ -204,4 +205,4 @@ gemini extensions install https://github.com/AdonaiVera/fiftyone-skills.git --co
 - [FiftyOne Plugins](https://github.com/voxel51/fiftyone-plugins)
 - [Discord Community](https://discord.gg/fiftyone-community)
 
-Copyright 2017-2025, Voxel51, Inc.
+Copyright 2017-2026, Voxel51, Inc.

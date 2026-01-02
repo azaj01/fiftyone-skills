@@ -23,6 +23,47 @@ This repository contains skills for computer vision workflows using FiftyOne and
 5. Review and delete duplicates
 6. Close app
 
+### FiftyOne Dataset Inference (`dataset-inference/`)
+
+**When to use:** User wants to load images/videos from a directory, import labeled datasets (COCO, YOLO, VOC), or run model inference on media files.
+
+**Instructions:** Load the skill file at `dataset-inference/skills/fiftyone-dataset-inference/SKILL.md`
+
+**Key requirements:**
+- FiftyOne MCP server must be running
+- `@voxel51/io` plugin for importing data
+- `@voxel51/zoo` plugin for model inference
+- `@voxel51/utils` plugin for dataset management
+
+**Workflow summary:**
+1. Explore directory to detect media and labels
+2. Confirm findings with user
+3. Create dataset and set context
+4. Import samples (media only or with labels)
+5. Validate import count
+6. Launch App and run inference
+7. View results and close app
+
+### FiftyOne Embeddings Visualization (`embeddings-visualization/`)
+
+**When to use:** User wants to visualize dataset in 2D, find clusters, identify outliers, color by class, explore embedding space, or understand data distribution.
+
+**Instructions:** Load the skill file at `embeddings-visualization/skills/fiftyone-embeddings-visualization/SKILL.md`
+
+**Key requirements:**
+- FiftyOne MCP server must be running
+- `@voxel51/brain` plugin must be installed
+- FiftyOne App must be launched before using brain operators
+
+**Workflow summary:**
+1. Set context with dataset name
+2. Launch FiftyOne App
+3. Compute embeddings (CLIP, DINOv2, etc.)
+4. Compute 2D visualization (UMAP/t-SNE)
+5. View in App Embeddings panel
+6. Color by field, find outliers, explore clusters
+7. Close app
+
 ## Prerequisites
 
 All skills require:
