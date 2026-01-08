@@ -20,6 +20,7 @@ Skills are packaged workflows that teach AI assistants to perform complex comput
 
 | Skill | Description |
 |-------|-------------|
+| [**Dataset Import**](dataset-import/skills/fiftyone-dataset-import/SKILL.md) | Universal import for all media types, label formats, and multimodal groups |
 | [**Find Duplicates**](find-duplicates/skills/fiftyone-find-duplicates/SKILL.md) | Find and remove duplicate images using brain similarity |
 | [**Dataset Inference**](dataset-inference/skills/fiftyone-dataset-inference/SKILL.md) | Import datasets (COCO, YOLO, VOC) and run model inference |
 | [**Embeddings Visualization**](embeddings-visualization/skills/fiftyone-embeddings-visualization/SKILL.md) | Visualize datasets in 2D, find clusters, identify outliers |
