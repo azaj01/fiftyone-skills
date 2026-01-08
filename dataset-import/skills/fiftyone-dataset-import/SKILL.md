@@ -55,27 +55,60 @@ Many specialized dataset formats require external Python packages. After detecti
 2. **Check if packages are installed** using `pip show <package>`
 3. **Search for installation instructions** if needed (use web search or FiftyOne docs)
 4. **Ask user for permission** before installing any packages
-5. **Install required packages** with `pip install <package>`
+5. **Install required packages** (see installation methods below)
 6. **Verify installation** before proceeding
 
 **Common format-to-package mappings:**
 
-| Dataset Format | Required Package(s) | Install Command |
-|---------------|---------------------|-----------------|
-| PandaSet | `pandaset-devkit` | `pip install pandaset-devkit` |
+| Dataset Format | Package Name | Install Command |
+|---------------|--------------|-----------------|
+| PandaSet | `pandaset` | `pip install "git+https://github.com/scaleapi/pandaset-devkit.git#subdirectory=python"` |
 | nuScenes | `nuscenes-devkit` | `pip install nuscenes-devkit` |
-| Waymo Open | `waymo-open-dataset-tf` | See Waymo docs |
-| Argoverse | `argoverse-api` | `pip install argoverse` |
+| Waymo Open | `waymo-open-dataset-tf` | See Waymo docs (requires TensorFlow) |
+| Argoverse 2 | `av2` | `pip install av2` |
 | KITTI 3D | `pykitti` | `pip install pykitti` |
 | Lyft L5 | `l5kit` | `pip install l5kit` |
-| A2D2 | `a2d2` | See Audi docs |
+| A2D2 | `a2d2` | See Audi A2D2 docs |
 
-**Dynamic package discovery:**
+**Installation methods (in order of preference):**
+
+1. **PyPI** - Standard pip install:
+   ```bash
+   pip install <package-name>
+   ```
+
+2. **GitHub URL** - When package is not on PyPI:
+   ```bash
+   # Standard GitHub install
+   pip install "git+https://github.com/<org>/<repo>.git"
+
+   # With subdirectory (for monorepos)
+   pip install "git+https://github.com/<org>/<repo>.git#subdirectory=python"
+
+   # Specific branch or tag
+   pip install "git+https://github.com/<org>/<repo>.git@v1.0.0"
+   ```
+
+3. **Clone and install** - For complex builds:
+   ```bash
+   git clone https://github.com/<org>/<repo>.git
+   cd <repo>
+   pip install .
+   ```
+
+**Dynamic package discovery workflow:**
+
 If the format is not in the table above:
-1. Search FiftyOne documentation for the format name
-2. Search PyPI for `<format-name>-devkit` or `<format-name>-sdk`
-3. Search web for "FiftyOne import <format-name>"
-4. Present findings to user with installation options
+1. **Search PyPI** for `<format-name>`, `<format-name>-devkit`, or `<format-name>-sdk`
+2. **Search GitHub** for `<format-name> devkit` or `<format-name> python`
+3. **Search web** for "FiftyOne import <format-name>" or "<format-name> python tutorial"
+4. **Check the dataset's official website** for developer tools/SDK
+5. **Present findings to user** with installation options
+
+**After installation:**
+1. **Verify** the package is installed: `pip show <package-name>`
+2. **Test import** in Python: `python -c "from <package> import ..."`
+3. **Search for FiftyOne integration** examples or write custom import code
 
 ### 5. Confirm before importing
 Present findings to user and **explicitly ask for confirmation** before creating the dataset.
@@ -169,37 +202,62 @@ Identify label format from file patterns:
 After identifying the format, check if external packages are needed:
 
 ```bash
-# Check if package is installed
-pip show pandaset-devkit
+# Check if package is installed (use the actual package name, not repo name)
+pip show pandaset
 
-# If not installed, search for installation instructions
-# Use web search or check FiftyOne documentation
+# If not found, the package needs to be installed
 ```
 
 **If packages are required:**
 
 1. **Inform user** what packages are needed and why
-2. **Ask for permission** to install:
+
+2. **Search for installation method** if not in the common mappings table:
+   - Search PyPI first: `pip search <package>` or check pypi.org
+   - Search GitHub for the devkit/SDK repository
+   - Check the dataset's official documentation
+   - Search web: "<dataset-name> python install"
+
+3. **Ask for permission** to install:
    ```
-   This dataset appears to be in PandaSet format, which requires the `pandaset-devkit` package.
+   This dataset appears to be in PandaSet format, which requires the `pandaset` package.
+
+   The package is not on PyPI and must be installed from GitHub:
+   pip install "git+https://github.com/scaleapi/pandaset-devkit.git#subdirectory=python"
 
    Would you like me to:
-   - Install `pandaset-devkit` (recommended)
+   - Install the package (recommended)
    - Search for alternative import methods
    - Abort and let you install manually
    ```
-3. **Install with pip** if user approves:
+
+4. **Install using the appropriate method**:
    ```bash
-   pip install pandaset-devkit
+   # PyPI (if available)
+   pip install <package-name>
+
+   # GitHub URL (if not on PyPI)
+   pip install "git+https://github.com/<org>/<repo>.git#subdirectory=python"
+
+   # Clone and install (for complex builds)
+   git clone https://github.com/<org>/<repo>.git && cd <repo> && pip install .
    ```
-4. **Verify installation**:
+
+5. **Verify installation**:
    ```bash
-   pip show pandaset-devkit
+   pip show <package-name>
    ```
-5. **Search for import code** if needed:
-   - Check FiftyOne documentation for dataset-specific importers
-   - Search for example code on how to use the devkit with FiftyOne
-   - Adapt the import code to the specific dataset structure
+
+6. **Test the import** in Python:
+   ```bash
+   python -c "from <package> import <main_class>; print('OK')"
+   ```
+
+7. **Search for FiftyOne integration code**:
+   - Search: "FiftyOne <format-name> import example"
+   - Search: "<format-name> to FiftyOne grouped dataset"
+   - Check FiftyOne docs for similar dataset types
+   - If no examples exist, build custom import code using the devkit API
 
 ### Step 5: Detect Grouping Pattern
 
