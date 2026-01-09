@@ -641,28 +641,33 @@ for frame_idx in range(frame_count):
         lidar_sample["frame_idx"] = frame_idx
 
         # === Load 3D cuboid labels if available ===
+        # IMPORTANT: Store 3D attributes as flat scalar fields, NOT lists
+        # Using lists (e.g., location=[x,y,z]) causes "Symbol.iterator" errors in 3D viewer
         if "cuboids" in available_labels:
             cuboids_pkl = labels_dir / "cuboids" / f"{frame_id}.pkl.gz"
             if cuboids_pkl.exists():
                 with gzip.open(cuboids_pkl, 'rb') as f:
-                    cuboids_data = pickle.load(f)
+                    cuboids_df = pickle.load(f)  # PandaSet uses pandas DataFrame
 
                 detections = []
-                for cuboid in cuboids_data:
-                    # Adapt based on actual cuboid format
+                for _, row in cuboids_df.iterrows():
                     detection = fo.Detection(
-                        label=cuboid.get("label", "object"),
-                        bounding_box=[0, 0, 0, 0],  # 2D placeholder
-                        # 3D attributes
-                        location=cuboid.get("position", [0, 0, 0]),
-                        dimensions=cuboid.get("dimensions", [1, 1, 1]),
-                        rotation=cuboid.get("rotation", [0, 0, 0]),
+                        label=row.get("label", "object"),
+                        bounding_box=[0, 0, 0.01, 0.01],  # minimal 2D placeholder
                     )
-                    if "track_id" in cuboid:
-                        detection["track_id"] = cuboid["track_id"]
+                    # Store 3D attributes as FLAT SCALAR fields (not lists!)
+                    detection["pos_x"] = float(row.get("position.x", 0))
+                    detection["pos_y"] = float(row.get("position.y", 0))
+                    detection["pos_z"] = float(row.get("position.z", 0))
+                    detection["dim_x"] = float(row.get("dimensions.x", 1))
+                    detection["dim_y"] = float(row.get("dimensions.y", 1))
+                    detection["dim_z"] = float(row.get("dimensions.z", 1))
+                    detection["yaw"] = float(row.get("yaw", 0))
+                    detection["track_id"] = str(row.get("uuid", ""))
+                    detection["stationary"] = bool(row.get("stationary", False))
                     detections.append(detection)
 
-                lidar_sample["detections_3d"] = fo.Detections(detections=detections)
+                lidar_sample["ground_truth"] = fo.Detections(detections=detections)
 
         # === Load semantic segmentation if available ===
         if "semseg" in available_labels:
