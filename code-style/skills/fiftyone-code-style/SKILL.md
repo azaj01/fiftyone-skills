@@ -40,11 +40,6 @@ def _helper(arg):
     return arg
 ```
 
-## What FiftyOne Does NOT Do
-
-- No import section headers (`# Third-party`, `# FiftyOne`, etc.)
-- No inline comments explaining code logic
-- No excessive docstrings for obvious operations
 
 ## Import Organization
 
@@ -127,9 +122,14 @@ except Exception as e:
     logger.warning("Failed to process data: %s", e)
 ```
 
-## Common Utilities
+## Avoid Redundant Code
 
-Check these before writing new code:
+Before writing new functions, search for existing implementations:
+- Local: search the FiftyOne source if available in the environment
+- Remote: search `https://github.com/voxel51/fiftyone`
+- Check `fiftyone/core/utils.py` and `fiftyone/utils/*` first
+
+## Common Utilities
 
 | Module | Functions |
 |--------|-----------|
