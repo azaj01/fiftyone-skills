@@ -5,145 +5,108 @@ description: Triage FiftyOne GitHub issues by validating status, categorizing re
 
 # FiftyOne Issue Triage
 
-## Triage Categories
+## Categories
 
 | Category | When to Use |
 |----------|-------------|
-| **Already Fixed** | Issue resolved in recent commits/releases |
-| **Won't Fix** | By design, out of scope, or not aligned with project goals |
+| **Already Fixed** | Resolved in recent commits/releases |
+| **Won't Fix** | By design, out of scope, or external behavior (e.g., browser, OS) |
 | **Not Reproducible** | Cannot reproduce with provided info |
-| **No Longer Relevant** | Outdated FiftyOne version, deprecated feature, or stale |
-| **Still Valid** | Confirmed bug or valid feature request |
+| **No Longer Relevant** | Outdated version, deprecated feature, or stale (6+ months) |
+| **Still Valid** | Confirmed bug or valid feature request needing work |
 
-## Triage Workflow
+## Workflow
 
-### Step 1: Read Issue Details
-
-Extract key information:
-```
-- Issue type: [BUG] / [FR] / [?]
-- FiftyOne version reported
-- Code to reproduce
-- Error message/traceback
-- Related module/feature
-```
-
-### Step 2: Search Codebase
-
+### 1. Fetch Issue
 ```bash
-# Search for related code
-grep -r "keyword" fiftyone/
-grep -r "ClassName" fiftyone/core/
-
-# Find the module mentioned in issue
-find fiftyone/ -name "*.py" | xargs grep -l "function_name"
+gh issue view {number} --repo voxel51/fiftyone --json title,body,author,state,labels,comments
 ```
 
-### Step 3: Check Git History
+### 2. Analyze
+- Extract: issue type, version, reproduction steps, error message
+- Search related: `gh issue list --repo voxel51/fiftyone --state all --search "keyword"`
+- Check git history: `git log --oneline --grep="keyword"`
 
+### 3. Assess Responsibility
+
+```
+Is this FiftyOne's responsibility?
+├─ External behavior (browser, OS, third-party)? → Won't Fix
+├─ User workflow/configuration issue? → Won't Fix (with workaround)
+└─ FiftyOne code/behavior issue? → Continue assessment
+```
+
+### 4. Assess Value (before proposing fixes)
+
+Ask: "Is a fix/doc change worth the effort?"
+- How many users affected?
+- Is workaround simple?
+- Would fix add complexity or hurt performance?
+
+### 5. Check Documentation
+
+Before closing, verify if behavior is documented:
 ```bash
-# Recent commits related to issue
-git log --oneline --since="2024-01-01" -- fiftyone/path/to/module.py
-
-# Search commit messages
-git log --oneline --grep="keyword"
-
-# Check if specific function was modified
-git log -p --all -S "function_name" -- "*.py"
-
-# Blame specific lines
-git blame fiftyone/path/to/file.py -L 100,120
+grep -r "keyword" docs/source/ --include="*.rst"
 ```
 
-### Step 4: Check Related PRs/Issues
+### 6. Categorize and Respond
 
-```bash
-# Search closed issues
-gh issue list --repo voxel51/fiftyone --state closed --search "keyword"
-
-# Search PRs
-gh pr list --repo voxel51/fiftyone --state merged --search "keyword"
-```
-
-### Step 5: Categorize and Respond
-
-Based on findings, select category and use appropriate response template.
-
-## Category Decision Tree
+## Decision Tree
 
 ```
 Issue reported
     │
+    ├─ External/not FiftyOne's responsibility? → Won't Fix
+    │
     ├─ Can reproduce?
-    │   ├─ NO → "Not Reproducible"
-    │   └─ YES ↓
+    │   └─ NO → Not Reproducible
     │
-    ├─ Fixed in recent commit/release?
-    │   ├─ YES → "Already Fixed"
-    │   └─ NO ↓
+    ├─ Fixed in recent commit/release? → Already Fixed
     │
-    ├─ Is this by design or out of scope?
-    │   ├─ YES → "Won't Fix"
-    │   └─ NO ↓
+    ├─ By design or out of scope? → Won't Fix
     │
-    ├─ Is issue still relevant? (version, feature exists)
-    │   ├─ NO → "No Longer Relevant"
-    │   └─ YES → "Still Valid"
+    ├─ Old version, stale, deprecated? → No Longer Relevant
+    │
+    └─ Confirmed, needs work → Still Valid
 ```
 
 ## Response Templates
 
-### Already Fixed
+**Tone:** Always start with thanks, be friendly, then explain.
 
+### Won't Fix (External Behavior)
 ```markdown
 Hi @{author},
 
-This issue has been addressed in {version/commit}.
+Thanks for reporting this and for the detailed description!
 
-**Fix details:**
-- PR: #{pr_number} or Commit: `{commit_hash}`
-- File: `{filepath}`
-- Change: {brief description}
+This is {expected behavior / external to FiftyOne}. {Brief explanation}.
+
+**Quick fixes:**
+- {Workaround 1}
+- {Workaround 2}
+
+Closing as this is {external behavior}, but hopefully this helps!
+```
+
+### Already Fixed
+```markdown
+Hi @{author},
+
+Thanks for reporting! This was fixed in {version/PR}.
 
 **To resolve:**
-```bash
 pip install --upgrade fiftyone
+
+Let us know if the issue persists.
 ```
-
-Please update and let us know if the issue persists.
-```
-
-### Won't Fix
-
-```markdown
-Hi @{author},
-
-Thank you for the detailed report. After investigation, we've determined this is {reason}:
-
-**Reason:** {explanation}
-
-{alternative_if_applicable}
-
-We're closing this issue, but feel free to reopen if you have additional context.
-```
-
-**Common reasons:**
-- Working as designed
-- Out of project scope
-- Would break backward compatibility
-- Performance/complexity tradeoff
 
 ### Not Reproducible
-
 ```markdown
 Hi @{author},
 
-We were unable to reproduce this issue with the provided information.
-
-**Environment tested:**
-- FiftyOne: v{version}
-- Python: {python_version}
-- OS: {os}
+Thanks for reporting! We couldn't reproduce this with the provided info.
 
 **Could you provide:**
 1. Minimal reproducible example
@@ -153,88 +116,36 @@ We were unable to reproduce this issue with the provided information.
 We'll reopen once we can reproduce.
 ```
 
-### No Longer Relevant
-
-```markdown
-Hi @{author},
-
-This issue appears to be no longer relevant:
-
-**Reason:** {reason}
-
-{details}
-
-If you're still experiencing this on FiftyOne v{current_version}, please open a new issue with updated details.
-```
-
-**Common reasons:**
-- Reported version is significantly outdated
-- Related feature was deprecated/removed
-- No activity for 6+ months
-- Duplicate of resolved issue
-
 ### Still Valid
-
 ```markdown
 Hi @{author},
 
-Confirmed this issue. Here's our analysis:
+Thanks for reporting! Confirmed this issue.
 
-**Summary:**
-{brief description of the bug/feature}
+**Root cause:** {technical explanation}
 
-**Root cause:**
-{technical explanation with code reference}
+**Location:** `{filepath}:{line}`
 
-**Suggested fix:**
-{approach or PR if proposing one}
-
-**Affected code:**
-- File: `{filepath}:{line_number}`
-- Function: `{function_name}`
-
-{next_steps}
+{Next steps or suggested fix}
 ```
-
-## Code Reference Format
-
-When referencing code in responses:
-
-```markdown
-**Location:** `fiftyone/core/module.py:123`
-
-**Current behavior:**
-```python
-# Line 123-130
-def problematic_function():
-    ...
-```
-
-**Suggested change:**
-```python
-def fixed_function():
-    ...
-```
-```
-
-## Investigation Checklist
-
-Before categorizing, verify:
-
-- [ ] Read full issue description and comments
-- [ ] Checked FiftyOne version reported vs current
-- [ ] Searched codebase for related code
-- [ ] Checked git history for recent fixes
-- [ ] Searched closed issues for duplicates
-- [ ] Attempted reproduction (if bug)
-- [ ] Identified root cause or reason
 
 ## Quick Reference
 
-| Category | Key Indicator | Response Action |
-|----------|---------------|-----------------|
-| Already Fixed | Found fix in git log | Point to PR/commit, suggest upgrade |
-| Won't Fix | By design or out of scope | Explain reasoning, suggest alternative |
+| Category | Key Indicator | Action |
+|----------|---------------|--------|
+| Already Fixed | Found in git log | Point to PR, suggest upgrade |
+| Won't Fix | External/by design | Explain, provide workaround |
 | Not Reproducible | Can't reproduce | Request more info |
-| No Longer Relevant | Old version, stale, deprecated | Explain why, suggest new issue |
-| Still Valid | Confirmed, no fix exists | Document root cause, propose fix |
+| No Longer Relevant | Old/stale/deprecated | Explain, suggest new issue |
+| Still Valid | Confirmed, no fix | Document root cause, propose fix |
+
+## Checklist
+
+- [ ] Read full issue + comments
+- [ ] Check if external/FiftyOne responsibility
+- [ ] Search codebase for related code
+- [ ] Check git history for recent fixes
+- [ ] Search closed issues for duplicates
+- [ ] Check if documented
+- [ ] Assess value of potential fix
+- [ ] Attempt reproduction (if bug)
