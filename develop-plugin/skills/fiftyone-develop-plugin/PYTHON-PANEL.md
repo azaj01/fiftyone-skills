@@ -111,16 +111,15 @@ def render(self, ctx):
 
 ```python
 def on_load(self, ctx):
-    # Create a plotly figure
-    plot_data = {
+    # Store plot data with set_data
+    ctx.panel.set_data("my_plot", {
         "data": [{"x": [1, 2, 3], "y": [4, 5, 6], "type": "scatter"}],
         "layout": {"title": "My Plot"}
-    }
-    ctx.panel.set_data("my_plot", plot_data)
+    })
 
 def render(self, ctx):
     panel = types.Object()
-    # Use view() with PlotlyView to display charts
+    # Reference stored data with data_key
     panel.view("my_plot", types.PlotlyView(data_key="my_plot"))
     return types.Property(panel)
 ```

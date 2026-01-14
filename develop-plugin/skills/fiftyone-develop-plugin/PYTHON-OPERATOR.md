@@ -383,6 +383,34 @@ def resolve_output(self, ctx):
     return types.Property(outputs)
 ```
 
+## Displaying Plots in Output
+
+Use `outputs.view()` with `PlotlyView` to display Plotly charts. Pass `data` (array of traces) and `layout` as **separate parameters**.
+
+```python
+def resolve_output(self, ctx):
+    outputs = types.Object()
+
+    # Plotly traces array
+    data = [
+        {
+            "x": ["A", "B", "C"],
+            "y": [10, 20, 15],
+            "type": "bar",  # or "scatter", "heatmap", "pie", etc.
+        }
+    ]
+
+    # Plotly layout object
+    layout = {
+        "title": "My Chart",
+        "height": 400,
+    }
+
+    outputs.view("chart", types.PlotlyView(data=data, layout=layout))
+
+    return types.Property(outputs)
+```
+
 ## Placement (UI Buttons)
 
 Add buttons to specific locations in the App:

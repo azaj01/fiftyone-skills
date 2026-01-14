@@ -201,8 +201,3 @@ def register(p):
 - [Plugin Development Guide](https://docs.voxel51.com/plugins/developing_plugins.html)
 - [FiftyOne Plugins Repo](https://github.com/voxel51/fiftyone-plugins)
 - [Operator Types API](https://docs.voxel51.com/api/fiftyone.operators.types.html)
-
-## License
-
-Copyright 2017-2026, Voxel51, Inc.
-Apache 2.0 License
