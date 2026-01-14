@@ -53,6 +53,8 @@ Skills bridge the gap between natural language and FiftyOne's 80+ operators, pro
 pip install fiftyone-mcp-server
 ```
 
+> **⚠️ Important:** Make sure to use the same Python environment where you installed the MCP server when configuring your AI tool. If you installed it in a virtual environment or conda environment, you must activate that environment or specify the full path to the executable.
+
 ### Step 2: Configure Your AI Tool
 
 <details>
