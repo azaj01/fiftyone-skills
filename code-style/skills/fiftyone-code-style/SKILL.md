@@ -1,6 +1,6 @@
 ---
 name: fiftyone-code-style
-description: Write Python code following FiftyOne's official conventions. Use when contributing to FiftyOne, developing plugins, or writing code that integrates with FiftyOne's codebase.
+description: Writes Python code following FiftyOne's official conventions. Use when contributing to FiftyOne, developing plugins, or writing code that integrates with FiftyOne's codebase.
 ---
 
 # FiftyOne Code Style

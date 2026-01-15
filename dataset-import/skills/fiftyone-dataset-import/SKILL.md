@@ -1,31 +1,9 @@
 ---
 name: fiftyone-dataset-import
-description: Universal dataset import for FiftyOne supporting all media types (images, videos, point clouds, 3D scenes), all label formats (COCO, YOLO, VOC, CVAT, KITTI, etc.), and multimodal grouped datasets. Use when users want to import any dataset regardless of format, automatically detect folder structure, handle autonomous driving data with multiple cameras and LiDAR, or create grouped datasets from multimodal data. Requires FiftyOne MCP server.
+description: Imports datasets into FiftyOne with automatic format detection. Supports all media types (images, videos, point clouds), label formats (COCO, YOLO, VOC, KITTI), and multimodal grouped datasets. Use when importing datasets, loading autonomous driving data, or creating grouped datasets.
 ---
 
 # Universal Dataset Import for FiftyOne
-
-## Overview
-
-Import any dataset into FiftyOne regardless of media type, label format, or folder structure. Automatically detects and handles:
-
-- **All media types**: images, videos, point clouds, 3D scenes
-- **All label formats**: COCO, YOLO, VOC, CVAT, KITTI, OpenLABEL, and more
-- **Multimodal groups**: Multiple cameras + LiDAR per scene (autonomous driving, robotics)
-- **Complex folder structures**: Nested directories, scene-based organization
-
-**Use this skill when:**
-- Importing datasets from any source or format
-- Working with autonomous driving data (multiple cameras, LiDAR, radar)
-- Loading multimodal data that needs grouping
-- The user doesn't know or specify the exact format
-- Importing point clouds, 3D scenes, or mixed media types
-
-## Prerequisites
-
-- FiftyOne MCP server installed and running
-- `@voxel51/io` plugin for importing data
-- `@voxel51/utils` plugin for dataset management
 
 ## Key Directives
 
@@ -1082,7 +1060,3 @@ After launching the app:
 - [Supported Dataset Formats](https://docs.voxel51.com/user_guide/dataset_creation/datasets.html)
 - [FiftyOne I/O Plugin](https://github.com/voxel51/fiftyone-plugins/tree/main/plugins/io)
 
-## License
-
-Copyright 2017-2026, Voxel51, Inc.
-Apache 2.0 License

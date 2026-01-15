@@ -1,24 +1,9 @@
 ---
 name: fiftyone-develop-plugin
-description: Develop custom FiftyOne plugins (operators and panels) from scratch. Use when user wants to create a new plugin, extend FiftyOne with custom operators, build interactive panels, or integrate external APIs into FiftyOne. Guides through requirements, design, coding, testing, and iteration.
+description: Develops custom FiftyOne plugins (operators and panels) from scratch. Use when creating plugins, extending FiftyOne with custom operators, building interactive panels, or integrating external APIs.
 ---
 
 # Develop FiftyOne Plugins
-
-## Overview
-
-Create custom FiftyOne plugins with full lifecycle support: requirements gathering, code generation, local testing, and iterative refinement.
-
-**Use this skill when:**
-- User asks to create/build/develop a FiftyOne plugin
-- User wants to add custom functionality to FiftyOne App
-- User needs to integrate an external API or service
-
-## Prerequisites
-
-- FiftyOne installed (`pip install fiftyone`)
-- Python 3.8+ (for Python plugins)
-- Node.js 16+ (only for JavaScript panels)
 
 ## Key Directives
 

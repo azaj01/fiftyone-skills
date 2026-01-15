@@ -1,26 +1,9 @@
 ---
 name: fiftyone-embeddings-visualization
-description: Visualize datasets in 2D using embeddings with UMAP or t-SNE dimensionality reduction. Use when users want to explore dataset structure, find clusters in images, identify outliers, color samples by class or metadata, or understand data distribution. Requires FiftyOne MCP server with @voxel51/brain plugin installed.
+description: Visualizes datasets in 2D using embeddings with UMAP or t-SNE dimensionality reduction. Use when exploring dataset structure, finding clusters, identifying outliers, or understanding data distribution.
 ---
 
 # Embeddings Visualization in FiftyOne
-
-## Overview
-
-Visualize your dataset in 2D using deep learning embeddings and dimensionality reduction (UMAP/t-SNE). Explore clusters, find outliers, and color samples by any field.
-
-**Use this skill when:**
-- Visualizing dataset structure in 2D
-- Finding natural clusters in images
-- Identifying outliers or anomalies
-- Exploring data distribution by class or metadata
-- Understanding embedding space relationships
-
-## Prerequisites
-
-- FiftyOne MCP server installed and running
-- `@voxel51/brain` plugin installed and enabled
-- Dataset with image samples loaded in FiftyOne
 
 ## Key Directives
 
@@ -524,7 +507,3 @@ execute_operator(
 - [Visualizing Embeddings Guide](https://docs.voxel51.com/user_guide/embeddings.html)
 - [Brain Plugin Source](https://github.com/voxel51/fiftyone-plugins/tree/main/plugins/brain)
 
-## License
-
-Copyright 2017-2026, Voxel51, Inc.
-Apache 2.0 License

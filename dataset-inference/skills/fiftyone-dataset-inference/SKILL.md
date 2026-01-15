@@ -1,26 +1,9 @@
 ---
 name: fiftyone-dataset-inference
-description: Create a FiftyOne dataset from a directory of media files (images, videos, point clouds), optionally import labels in common formats (COCO, YOLO, VOC), run model inference, and store predictions. Use when users want to load local files into FiftyOne, apply ML models for detection, classification, or segmentation, or build end-to-end inference pipelines.
+description: Creates FiftyOne datasets from media directories and runs model inference. Use when loading local files, applying ML models for detection/classification/segmentation, or building inference pipelines.
 ---
 
 # Create Dataset and Run Inference
-
-## Overview
-
-Create FiftyOne datasets from local directories, import labels in standard formats, and run model inference to generate predictions.
-
-**Use this skill when:**
-- Loading images, videos, or point clouds from a directory
-- Importing labeled datasets (COCO, YOLO, VOC, CVAT, etc.)
-- Running model inference on media files
-- Building end-to-end ML pipelines
-
-## Prerequisites
-
-- FiftyOne MCP server installed and running
-- `@voxel51/io` plugin for importing data
-- `@voxel51/zoo` plugin for model inference
-- `@voxel51/utils` plugin for dataset management
 
 ## Key Directives
 
@@ -402,7 +385,3 @@ launch_app(dataset_name="classification-dataset")
 - [Importing Datasets Guide](https://docs.voxel51.com/user_guide/import_datasets.html)
 - [Applying Models Guide](https://docs.voxel51.com/user_guide/applying_models.html)
 
-## License
-
-Copyright 2017-2026, Voxel51, Inc.
-Apache 2.0 License

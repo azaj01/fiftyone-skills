@@ -1,25 +1,9 @@
 ---
 name: fiftyone-find-duplicates
-description: Find duplicate or near-duplicate images in FiftyOne datasets using brain similarity computation. Use when users want to deduplicate datasets, find similar images, cluster visually similar content, or remove redundant samples. Requires FiftyOne MCP server with @voxel51/brain plugin installed.
+description: Finds duplicate or near-duplicate images in FiftyOne datasets using brain similarity computation. Use when deduplicating datasets, finding similar images, or removing redundant samples.
 ---
 
 # Find Duplicates in FiftyOne Datasets
-
-## Overview
-
-Find and remove duplicate or near-duplicate images using FiftyOne's brain similarity operators. Uses deep learning embeddings to identify visually similar images.
-
-**Use this skill when:**
-- Removing duplicate images from datasets
-- Finding near-duplicate images (similar but not identical)
-- Clustering visually similar images
-- Cleaning datasets before training
-
-## Prerequisites
-
-- FiftyOne MCP server installed and running
-- `@voxel51/brain` plugin installed and enabled
-- Dataset with image samples loaded in FiftyOne
 
 ## Key Directives
 
@@ -338,7 +322,3 @@ close_app()
 - [FiftyOne Brain Documentation](https://docs.voxel51.com/user_guide/brain.html)
 - [Brain Plugin Source](https://github.com/voxel51/fiftyone-plugins/tree/main/plugins/brain)
 
-## License
-
-Copyright 2017-2026, Voxel51, Inc.
-Apache 2.0 License
