@@ -216,7 +216,6 @@ Join the FiftyOne community to get help, share your skills, and connect with oth
 
 - **Discord**: [FiftyOne Community](https://discord.gg/fiftyone-community)
 - **GitHub Issues**: [Report bugs or request features](https://github.com/voxel51/fiftyone-skills/issues)
-- **Twitter**: [@vabordeaux](https://x.com/vabordeaux)
 
 ---
 
