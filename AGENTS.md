@@ -129,7 +129,7 @@ This repository contains skills for computer vision workflows using FiftyOne and
 All skills require:
 
 1. **FiftyOne MCP Server** installed and configured
-   - Repository: https://github.com/AdonaiVera/fiftyone-mcp-server
+   - Repository: https://github.com/voxel51/fiftyone-mcp-server
    - Must be running and accessible
 
 2. **FiftyOne** installed
@@ -179,5 +179,5 @@ Most FiftyOne skills follow this pattern:
 ## Resources
 
 - [FiftyOne Documentation](https://docs.voxel51.com)
-- [FiftyOne MCP Server](https://github.com/AdonaiVera/fiftyone-mcp-server)
+- [FiftyOne MCP Server](https://github.com/voxel51/fiftyone-mcp-server)
 - [FiftyOne Plugins](https://github.com/voxel51/fiftyone-plugins)

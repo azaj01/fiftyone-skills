@@ -13,16 +13,16 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![FiftyOne](https://img.shields.io/badge/FiftyOne-v1.10+-orange.svg)](https://github.com/voxel51/fiftyone)
-[![MCP Server](https://img.shields.io/badge/MCP%20Server-fiftyone--mcp-green.svg)](https://github.com/AdonaiVera/fiftyone-mcp-server)
+[![MCP Server](https://img.shields.io/badge/MCP%20Server-fiftyone--mcp-green.svg)](https://github.com/voxel51/fiftyone-mcp-server)
 [![Discord](https://img.shields.io/badge/Discord-FiftyOne%20Community-7289DA.svg)](https://discord.gg/fiftyone-community)
 
-[Documentation](https://docs.voxel51.com) · [MCP Server](https://github.com/AdonaiVera/fiftyone-mcp-server) · [FiftyOne Plugins](https://github.com/voxel51/fiftyone-plugins) · [Discord](https://discord.gg/fiftyone-community)
+[Documentation](https://docs.voxel51.com) · [MCP Server](https://github.com/voxel51/fiftyone-mcp-server) · [FiftyOne Plugins](https://github.com/voxel51/fiftyone-plugins) · [Discord](https://discord.gg/fiftyone-community)
 
 </div>
 
 ## What are Skills?
 
-Skills are packaged workflows that teach AI assistants to perform complex computer vision tasks autonomously. Combined with the [FiftyOne MCP Server](https://github.com/AdonaiVera/fiftyone-mcp-server), you can find duplicates, run inference, and explore datasets using natural language.
+Skills are packaged workflows that teach AI assistants to perform complex computer vision tasks autonomously. Combined with the [FiftyOne MCP Server](https://github.com/voxel51/fiftyone-mcp-server), you can find duplicates, run inference, and explore datasets using natural language.
 
 ```
 "Find and remove duplicate images from my dataset"
@@ -204,7 +204,7 @@ See [find-duplicates SKILL.md](find-duplicates/skills/fiftyone-find-duplicates/S
 | Resource | Description |
 |----------|-------------|
 | [FiftyOne Docs](https://docs.voxel51.com) | Official documentation |
-| [FiftyOne MCP Server](https://github.com/AdonaiVera/fiftyone-mcp-server) | MCP server for AI integration |
+| [FiftyOne MCP Server](https://github.com/voxel51/fiftyone-mcp-server) | MCP server for AI integration |
 | [FiftyOne Plugins](https://github.com/voxel51/fiftyone-plugins) | Official plugin collection |
 | [Agent Skills Spec](https://agentskills.io) | Skills format specification |
 | [PyPI Package](https://pypi.org/project/fiftyone-mcp-server/) | MCP server on PyPI |
