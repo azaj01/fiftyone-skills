@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Agent Context Protocol (ACP) skills for computer vision workflows using FiftyOne.",
-    "version": "1.0.2"
+    "version": "1.0.3"
   },
   "plugins": [
     {
@@ -31,6 +31,12 @@
       "source": "./skills/fiftyone-dataset-inference",
       "skills": "./",
       "description": "Run model inference on FiftyOne datasets using Zoo models or custom models. Use when applying ML models for detection, classification, segmentation, or embeddings on existing datasets."
+    },
+    {
+      "name": "fiftyone-model-evaluation",
+      "source": "./skills/fiftyone-model-evaluation",
+      "skills": "./",
+      "description": "Evaluate model predictions against ground truth using COCO, Open Images, or custom protocols. Use when computing mAP, precision, recall, confusion matrices, or analyzing TP/FP/FN examples for detection, classification, segmentation, or regression tasks."
     },
     {
       "name": "fiftyone-embeddings-visualization",

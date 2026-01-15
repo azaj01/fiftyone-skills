@@ -40,7 +40,8 @@ Skills bridge the gap between natural language and FiftyOne's 80+ operators, pro
 | 📥 [**Dataset Import**](skills/fiftyone-dataset-import/SKILL.md) | Universal import for all media types, label formats, and multimodal groups |
 | 📤 [**Dataset Export**](skills/fiftyone-dataset-export/SKILL.md) | Export datasets to COCO, YOLO, VOC, CVAT, CSV, and more |
 | 🔍 [**Find Duplicates**](skills/fiftyone-find-duplicates/SKILL.md) | Find and remove duplicate images using brain similarity |
-| 🤖 [**Dataset Inference**](skills/fiftyone-dataset-inference/SKILL.md) | Import datasets (COCO, YOLO, VOC) and run model inference |
+| 🤖 [**Dataset Inference**](skills/fiftyone-dataset-inference/SKILL.md) | Run Zoo models for detection, classification, segmentation, embeddings |
+| 📈 [**Model Evaluation**](skills/fiftyone-model-evaluation/SKILL.md) | Compute mAP, precision, recall, confusion matrices, analyze TP/FP/FN |
 | 📊 [**Embeddings Visualization**](skills/fiftyone-embeddings-visualization/SKILL.md) | Visualize datasets in 2D, find clusters, identify outliers |
 | 🔌 [**Develop Plugin**](skills/fiftyone-develop-plugin/SKILL.md) | Create custom FiftyOne plugins (operators and panels) |
 | 🎨 [**Code Style**](skills/fiftyone-code-style/SKILL.md) | Write Python code following FiftyOne's official conventions |
