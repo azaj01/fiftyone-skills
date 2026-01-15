@@ -1,135 +1,77 @@
 ---
 name: fiftyone-dataset-inference
-description: Creates FiftyOne datasets from media directories and runs model inference. Use when loading local files, applying ML models for detection/classification/segmentation, or building inference pipelines.
+description: Run model inference on FiftyOne datasets using Zoo models or custom models. Use when applying ML models for detection, classification, segmentation, or embeddings on existing datasets.
 ---
 
-# Create Dataset and Run Inference
+# Run Model Inference on FiftyOne Datasets
 
 ## Key Directives
 
 **ALWAYS follow these rules:**
 
-### 1. Explore directory first
-Scan the user's directory before importing to detect media types and label formats.
+### 1. Check if dataset exists first
+```python
+list_datasets()
+```
+If the dataset doesn't exist, use the **fiftyone-dataset-import** skill to load it first.
 
-### 2. Confirm with user
-Present findings and get confirmation before creating datasets or running inference.
-
-### 3. Set context before operations
+### 2. Set context before operations
 ```python
 set_context(dataset_name="my-dataset")
 ```
 
-### 4. Launch App for inference
+### 3. Launch App for inference
+The App must be running to execute inference operators:
 ```python
 launch_app(dataset_name="my-dataset")
 ```
 
-### 5. User specifies field names
-Always ask the user for:
-- Dataset name
-- Label field for predictions
+### 4. Ask user for field names
+Always confirm with the user:
+- Which model to use
+- Label field name for predictions (e.g., `predictions`, `detections`, `embeddings`)
 
-### 6. Close app when done
+### 5. Close app when done
 ```python
 close_app()
 ```
 
 ## Workflow
 
-### Step 1: Explore the Directory
-
-Use Bash to scan the user's directory:
-
-```bash
-ls -la /path/to/directory
-find /path/to/directory -type f | head -20
-```
-
-Identify media files and label files. See **Supported Dataset Types** section for format detection.
-
-### Step 2: Present Findings to User
-
-Before creating the dataset, confirm with the user:
-
-```
-I found the following in /path/to/directory:
-- 150 image files (.jpg, .png)
-- Labels: COCO format (annotations.json)
-
-Proposed dataset name: "my-dataset"
-Label field: "ground_truth"
-
-Should I proceed with these settings?
-```
-
-### Step 3: Create Dataset
+### Step 1: Verify Dataset Exists
 
 ```python
-execute_operator(
-    operator_uri="@voxel51/utils/create_dataset",
-    params={
-        "name": "my-dataset",
-        "persistent": true
-    }
-)
+list_datasets()
 ```
 
-### Step 4: Set Context
+If the dataset is not in the list:
+- Ask the user for the data location
+- **Use the fiftyone-dataset-import skill** to import the data first
+- Return to this workflow after import completes
 
-Set context to the newly created dataset before importing:
+### Step 2: Load Dataset and Review
 
 ```python
 set_context(dataset_name="my-dataset")
+dataset_summary(name="my-dataset")
 ```
 
-### Step 5: Import Samples
+Review:
+- Sample count
+- Media type
+- Existing label fields
 
-**For media only (no labels):**
-```python
-execute_operator(
-    operator_uri="@voxel51/io/import_samples",
-    params={
-        "import_type": "MEDIA_ONLY",
-        "style": "DIRECTORY",
-        "directory": {"absolute_path": "/path/to/images"}
-    }
-)
-```
-
-**For media with labels:**
-```python
-execute_operator(
-    operator_uri="@voxel51/io/import_samples",
-    params={
-        "import_type": "MEDIA_AND_LABELS",
-        "dataset_type": "COCO",
-        "data_path": {"absolute_path": "/path/to/images"},
-        "labels_path": {"absolute_path": "/path/to/annotations.json"},
-        "label_field": "ground_truth"
-    }
-)
-```
-
-### Step 6: Validate Import
-
-Verify samples imported correctly by comparing with source:
-
-```python
-load_dataset(name="my-dataset")
-```
-
-Compare `num_samples` with the file count from Step 1. Report any discrepancy to the user.
-
-### Step 7: Launch App
+### Step 3: Launch App
 
 ```python
 launch_app(dataset_name="my-dataset")
 ```
 
-### Step 8: Apply Model Inference
+### Step 4: Apply Model Inference
 
-Ask user for model name and label field for predictions.
+Ask user for:
+- Model name (see **Available Zoo Models** below)
+- Label field for predictions
 
 ```python
 execute_operator(
@@ -142,93 +84,73 @@ execute_operator(
 )
 ```
 
-### Step 9: View Results
+### Step 5: View Results
 
 ```python
 set_view(exists=["predictions"])
 ```
 
-### Step 10: Clean Up
+### Step 6: Clean Up
 
 ```python
 close_app()
 ```
 
-## Supported Media Types
+## Available Zoo Models
 
-| Extensions | Media Type |
-|------------|------------|
-| `.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, `.webp` | image |
-| `.mp4`, `.avi`, `.mov`, `.mkv`, `.webm` | video |
-| `.pcd` | point-cloud |
-| `.fo3d` | 3d |
+Some models require additional packages. If a model fails with a dependency error, the response includes `install_command`. Offer to run it for the user.
 
-## Supported Dataset Types
+### Detection Models
 
-| Value | File Pattern | Label Types |
-|-------|--------------|-------------|
-| `Image Classification Directory Tree` | Folder per class | classification |
-| `Video Classification Directory Tree` | Folder per class | classification |
-| `COCO` | `*.json` | detections, segmentations, keypoints |
-| `VOC` | `*.xml` per image | detections |
-| `KITTI` | `*.txt` per image | detections |
-| `YOLOv4` | `*.txt` + `classes.txt` | detections |
-| `YOLOv5` | `data.yaml` + `labels/*.txt` | detections |
-| `CVAT Image` | Single `*.xml` file | classifications, detections, polylines, keypoints |
-| `CVAT Video` | XML directory | frame labels |
-| `TF Image Classification` | TFRecords | classification |
-| `TF Object Detection` | TFRecords | detections |
+| Model | Description | Extra Deps |
+|-------|-------------|------------|
+| `faster-rcnn-resnet50-fpn-coco-torch` | Faster R-CNN | None |
+| `retinanet-resnet50-fpn-coco-torch` | RetinaNet | None |
+| `yolov8n-coco-torch` | YOLOv8 nano (fast) | ultralytics |
+| `yolov8s-coco-torch` | YOLOv8 small | ultralytics |
+| `yolov8m-coco-torch` | YOLOv8 medium | ultralytics |
+| `yolov8l-coco-torch` | YOLOv8 large | ultralytics |
+| `yolov8x-coco-torch` | YOLOv8 extra-large | ultralytics |
 
-## Common Zoo Models
+### Classification Models
 
-Popular models for `apply_zoo_model`. Some models require additional packages - if a model fails with a dependency error, the response includes the `install_command`. Offer to run it for the user.
+| Model | Description | Extra Deps |
+|-------|-------------|------------|
+| `resnet50-imagenet-torch` | ResNet-50 | None |
+| `mobilenet-v2-imagenet-torch` | MobileNet v2 | None |
+| `vit-base-patch16-224-imagenet-torch` | Vision Transformer | None |
 
-**Detection (PyTorch only):**
-- `faster-rcnn-resnet50-fpn-coco-torch` - Faster R-CNN (no extra deps)
-- `retinanet-resnet50-fpn-coco-torch` - RetinaNet (no extra deps)
+### Segmentation Models
 
-**Detection (requires ultralytics):**
-- `yolov8n-coco-torch` - YOLOv8 nano (fast)
-- `yolov8s-coco-torch` - YOLOv8 small
-- `yolov8m-coco-torch` - YOLOv8 medium
+| Model | Description | Extra Deps |
+|-------|-------------|------------|
+| `sam-vit-base-torch` | Segment Anything (base) | segment-anything |
+| `sam-vit-large-torch` | Segment Anything (large) | segment-anything |
+| `sam-vit-huge-torch` | Segment Anything (huge) | segment-anything |
+| `deeplabv3-resnet101-coco-torch` | DeepLabV3 | None |
 
-**Classification:**
-- `resnet50-imagenet-torch` - ResNet-50
-- `mobilenet-v2-imagenet-torch` - MobileNet v2
+### Embedding Models
 
-**Segmentation:**
-- `sam-vit-base-hq-torch` - Segment Anything
-- `deeplabv3-resnet101-coco-torch` - DeepLabV3
-
-**Embeddings:**
-- `clip-vit-base32-torch` - CLIP embeddings
-- `dinov2-vits14-torch` - DINOv2 embeddings
+| Model | Description | Extra Deps |
+|-------|-------------|------------|
+| `clip-vit-base32-torch` | CLIP embeddings | open-clip-torch |
+| `dinov2-vits14-torch` | DINOv2 small | None |
+| `dinov2-vitb14-torch` | DINOv2 base | None |
+| `dinov2-vitl14-torch` | DINOv2 large | None |
 
 ## Common Use Cases
 
-### Use Case 1: Load Images and Run Detection
+### Use Case 1: Run Object Detection
 
 ```python
-execute_operator(
-    operator_uri="@voxel51/utils/create_dataset",
-    params={"name": "my-images", "persistent": true}
-)
+# Verify dataset exists
+list_datasets()
 
-set_context(dataset_name="my-images")
+# Set context and launch
+set_context(dataset_name="my-dataset")
+launch_app(dataset_name="my-dataset")
 
-execute_operator(
-    operator_uri="@voxel51/io/import_samples",
-    params={
-        "import_type": "MEDIA_ONLY",
-        "style": "DIRECTORY",
-        "directory": {"absolute_path": "/path/to/images"}
-    }
-)
-
-load_dataset(name="my-images")  # Validate import
-
-launch_app(dataset_name="my-images")
-
+# Apply detection model
 execute_operator(
     operator_uri="@voxel51/zoo/apply_zoo_model",
     params={
@@ -238,150 +160,141 @@ execute_operator(
     }
 )
 
-set_view(exists=["predictions"]) 
+# View results
+set_view(exists=["predictions"])
 ```
 
-### Use Case 2: Import COCO Dataset and Add Predictions
+### Use Case 2: Run Classification
 
 ```python
-execute_operator(
-    operator_uri="@voxel51/utils/create_dataset",
-    params={"name": "coco-dataset", "persistent": true}
-)
-
-set_context(dataset_name="coco-dataset")
-
-execute_operator(
-    operator_uri="@voxel51/io/import_samples",
-    params={
-        "import_type": "MEDIA_AND_LABELS",
-        "dataset_type": "COCO",
-        "data_path": {"absolute_path": "/path/to/images"},
-        "labels_path": {"absolute_path": "/path/to/annotations.json"},
-        "label_field": "ground_truth"
-    }
-)
-
-load_dataset(name="coco-dataset")  # Validate import
-
-launch_app(dataset_name="coco-dataset")
+set_context(dataset_name="my-dataset")
+launch_app(dataset_name="my-dataset")
 
 execute_operator(
     operator_uri="@voxel51/zoo/apply_zoo_model",
     params={
         "tab": "BUILTIN",
-        "model": "faster-rcnn-resnet50-fpn-coco-torch",
-        "label_field": "predictions"
+        "model": "resnet50-imagenet-torch",
+        "label_field": "classification"
     }
 )
 
-set_view(exists=["predictions"]) 
+set_view(exists=["classification"])
 ```
 
-### Use Case 3: Import YOLO Dataset
+### Use Case 3: Generate Embeddings
 
 ```python
-execute_operator(
-    operator_uri="@voxel51/utils/create_dataset",
-    params={"name": "yolo-dataset", "persistent": true}
-)
-
-set_context(dataset_name="yolo-dataset")
+set_context(dataset_name="my-dataset")
+launch_app(dataset_name="my-dataset")
 
 execute_operator(
-    operator_uri="@voxel51/io/import_samples",
+    operator_uri="@voxel51/zoo/apply_zoo_model",
     params={
-        "import_type": "MEDIA_AND_LABELS",
-        "dataset_type": "YOLOv5",
-        "dataset_dir": {"absolute_path": "/path/to/yolo/dataset"},
-        "label_field": "ground_truth"
+        "tab": "BUILTIN",
+        "model": "clip-vit-base32-torch",
+        "label_field": "clip_embeddings"
     }
 )
-
-load_dataset(name="yolo-dataset")  
-
-launch_app(dataset_name="yolo-dataset")
 ```
 
-### Use Case 4: Classification with Directory Tree
+### Use Case 4: Compare Ground Truth with Predictions
 
-For a folder structure like:
-```
-/dataset/
-  /cats/
-    cat1.jpg
-    cat2.jpg
-  /dogs/
-    dog1.jpg
-    dog2.jpg
-```
+If dataset has existing labels:
 
 ```python
-execute_operator(
-    operator_uri="@voxel51/utils/create_dataset",
-    params={"name": "classification-dataset", "persistent": true}
-)
+set_context(dataset_name="my-dataset")
+dataset_summary(name="my-dataset")  # Check existing fields
 
-set_context(dataset_name="classification-dataset")
+launch_app(dataset_name="my-dataset")
 
+# Run inference with different field name
 execute_operator(
-    operator_uri="@voxel51/io/import_samples",
+    operator_uri="@voxel51/zoo/apply_zoo_model",
     params={
-        "import_type": "MEDIA_AND_LABELS",
-        "dataset_type": "Image Classification Directory Tree",
-        "dataset_dir": {"absolute_path": "/path/to/dataset"},
-        "label_field": "ground_truth"
+        "tab": "BUILTIN",
+        "model": "yolov8m-coco-torch",
+        "label_field": "predictions"  # Different from ground_truth
     }
 )
 
-load_dataset(name="classification-dataset")  
+# View both fields to compare
+set_view(exists=["ground_truth", "predictions"])
+```
 
-launch_app(dataset_name="classification-dataset")
+### Use Case 5: Run Multiple Models
+
+```python
+set_context(dataset_name="my-dataset")
+launch_app(dataset_name="my-dataset")
+
+# Run detection
+execute_operator(
+    operator_uri="@voxel51/zoo/apply_zoo_model",
+    params={
+        "tab": "BUILTIN",
+        "model": "yolov8n-coco-torch",
+        "label_field": "detections"
+    }
+)
+
+# Run classification
+execute_operator(
+    operator_uri="@voxel51/zoo/apply_zoo_model",
+    params={
+        "tab": "BUILTIN",
+        "model": "resnet50-imagenet-torch",
+        "label_field": "classification"
+    }
+)
+
+# Run embeddings
+execute_operator(
+    operator_uri="@voxel51/zoo/apply_zoo_model",
+    params={
+        "tab": "BUILTIN",
+        "model": "clip-vit-base32-torch",
+        "label_field": "embeddings"
+    }
+)
 ```
 
 ## Troubleshooting
 
-**Error: "Dataset already exists"**
-- Use a different dataset name
-- Or delete existing dataset first with `@voxel51/utils/delete_dataset`
-
-**Error: "No samples found"**
-- Verify the directory path is correct
-- Check file extensions are supported
-- Ensure files are not in nested subdirectories (use `recursive=true` if needed)
-
-**Error: "Labels path not found"**
-- Verify the labels file/directory exists
-- Check the path is absolute, not relative
+**Error: "Dataset not found"**
+- Use `list_datasets()` to see available datasets
+- Use the **fiftyone-dataset-import** skill to import data first
 
 **Error: "Model not found"**
 - Check model name spelling
-- Verify model exists in FiftyOne Zoo
-- Use `list_operators()` and `get_operator_schema()` to discover available models
+- Use `get_operator_schema("@voxel51/zoo/apply_zoo_model")` to see available models
 
-**Error: "Missing dependency" (e.g., torch, ultralytics)**
+**Error: "Missing dependency" (e.g., ultralytics, segment-anything)**
 - The MCP server detects missing dependencies
 - Response includes `missing_package` and `install_command`
-- Install the required package and restart MCP server
+- Install the required package: `pip install <package>`
+- Restart MCP server after installing
 
-**Slow inference**
+**Inference is slow**
 - Use smaller model variant (e.g., `yolov8n` instead of `yolov8x`)
+- Use delegated execution for large datasets
+- Consider filtering to a view first
+
+**Out of memory**
 - Reduce batch size
-- Consider delegated execution for large datasets
+- Use smaller model variant
+- Process dataset in chunks using views
 
 ## Best Practices
 
-1. **Explore before importing** - Always scan the directory first to understand the data
-2. **Confirm with user** - Present findings and get confirmation before creating datasets
-3. **Use descriptive names** - Dataset names and label fields should be meaningful
-4. **Separate ground truth from predictions** - Use different field names (e.g., `ground_truth` vs `predictions`)
-5. **Start with fast models** - Use lightweight models first, then upgrade if needed
-6. **Check operator schemas** - Use `get_operator_schema()` to discover available parameters
+1. **Use descriptive field names** - `predictions`, `yolo_detections`, `clip_embeddings`
+2. **Don't overwrite ground truth** - Use different field names for predictions
+3. **Start with fast models** - Use nano/small variants first, upgrade if needed
+4. **Check existing fields** - Use `dataset_summary()` before running inference
+5. **Filter first for testing** - Test on a small view before processing full dataset
 
 ## Resources
 
-- [FiftyOne Dataset Zoo](https://docs.voxel51.com/dataset_zoo/index.html)
 - [FiftyOne Model Zoo](https://docs.voxel51.com/model_zoo/index.html)
-- [Importing Datasets Guide](https://docs.voxel51.com/user_guide/import_datasets.html)
 - [Applying Models Guide](https://docs.voxel51.com/user_guide/applying_models.html)
-
+- [Zoo Models API](https://docs.voxel51.com/api/fiftyone.zoo.models.html)

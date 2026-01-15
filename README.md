@@ -37,13 +37,14 @@ Skills bridge the gap between natural language and FiftyOne's 80+ operators, pro
 
 | Skill | Description |
 |-------|-------------|
-| 📥 [**Dataset Import**](dataset-import/skills/fiftyone-dataset-import/SKILL.md) | Universal import for all media types, label formats, and multimodal groups |
-| 🔍 [**Find Duplicates**](find-duplicates/skills/fiftyone-find-duplicates/SKILL.md) | Find and remove duplicate images using brain similarity |
-| 🤖 [**Dataset Inference**](dataset-inference/skills/fiftyone-dataset-inference/SKILL.md) | Import datasets (COCO, YOLO, VOC) and run model inference |
-| 📊 [**Embeddings Visualization**](embeddings-visualization/skills/fiftyone-embeddings-visualization/SKILL.md) | Visualize datasets in 2D, find clusters, identify outliers |
-| 🔌 [**Develop Plugin**](develop-plugin/skills/fiftyone-develop-plugin/SKILL.md) | Create custom FiftyOne plugins (operators and panels) |
-| 🎨 [**Code Style**](code-style/skills/fiftyone-code-style/SKILL.md) | Write Python code following FiftyOne's official conventions |
-| 🏷️ [**PR Triage**](pr-triage/skills/fiftyone-pr-triage/SKILL.md) | Triage GitHub issues: validate status, categorize, generate responses |
+| 📥 [**Dataset Import**](skills/fiftyone-dataset-import/SKILL.md) | Universal import for all media types, label formats, and multimodal groups |
+| 📤 [**Dataset Export**](skills/fiftyone-dataset-export/SKILL.md) | Export datasets to COCO, YOLO, VOC, CVAT, CSV, and more |
+| 🔍 [**Find Duplicates**](skills/fiftyone-find-duplicates/SKILL.md) | Find and remove duplicate images using brain similarity |
+| 🤖 [**Dataset Inference**](skills/fiftyone-dataset-inference/SKILL.md) | Import datasets (COCO, YOLO, VOC) and run model inference |
+| 📊 [**Embeddings Visualization**](skills/fiftyone-embeddings-visualization/SKILL.md) | Visualize datasets in 2D, find clusters, identify outliers |
+| 🔌 [**Develop Plugin**](skills/fiftyone-develop-plugin/SKILL.md) | Create custom FiftyOne plugins (operators and panels) |
+| 🎨 [**Code Style**](skills/fiftyone-code-style/SKILL.md) | Write Python code following FiftyOne's official conventions |
+| 🏷️ [**Issue Triage**](skills/fiftyone-issue-triage/SKILL.md) | Triage GitHub issues: validate status, categorize, generate responses |
 
 ## Quick Start
 
@@ -155,11 +156,9 @@ Claude will automatically load the skill instructions and execute the full workf
 Each skill follows the [Agent Skills](https://agentskills.io) specification:
 
 ```
-find-duplicates/
-├── plugin.json                          # Metadata and keywords
-└── skills/
-    └── fiftyone-find-duplicates/
-        └── SKILL.md                     # Instructions for AI
+skills/
+└── fiftyone-find-duplicates/
+    └── SKILL.md                     # Instructions for AI
 ```
 
 **SKILL.md format:**
@@ -191,13 +190,13 @@ Common errors and solutions
 We welcome contributions! Here's how to create a new skill:
 
 1. **Fork** this repository
-2. **Copy** an existing skill folder (e.g., `find-duplicates/`)
+2. **Copy** an existing skill folder (e.g., `skills/fiftyone-find-duplicates/`)
 3. **Update** `SKILL.md` with your workflow
 4. **Add** your skill to `.claude-plugin/marketplace.json`
 5. **Test** with your AI assistant
 6. **Submit** a Pull Request
 
-See [find-duplicates SKILL.md](find-duplicates/skills/fiftyone-find-duplicates/SKILL.md) for a complete example.
+See [find-duplicates SKILL.md](skills/fiftyone-find-duplicates/SKILL.md) for a complete example.
 
 ## Resources
 

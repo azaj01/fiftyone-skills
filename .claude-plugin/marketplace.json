@@ -30,7 +30,7 @@
       "name": "fiftyone-dataset-inference",
       "source": "./skills/fiftyone-dataset-inference",
       "skills": "./",
-      "description": "Create FiftyOne datasets from local directories, import labels in standard formats (COCO, YOLO, VOC), and run model inference. Use when users want to load local files, apply ML models for detection, classification, or segmentation, or build end-to-end inference pipelines."
+      "description": "Run model inference on FiftyOne datasets using Zoo models or custom models. Use when applying ML models for detection, classification, segmentation, or embeddings on existing datasets."
     },
     {
       "name": "fiftyone-embeddings-visualization",
