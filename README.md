@@ -131,6 +131,8 @@ curl -sL skil.sh | sh -s -- voxel51/fiftyone-skills
 ```
 Interactive prompts let you select skills, agents, and install scope (project or global).
 
+Supported agents: Claude Code, Cursor, Codex, OpenCode, GitHub Copilot, Amp, Antigravity, Roo Code, Kilo Code, Goose
+
 **Claude Code:**
 ```bash
 # Register the skills marketplace
