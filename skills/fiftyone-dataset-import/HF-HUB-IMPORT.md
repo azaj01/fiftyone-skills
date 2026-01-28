@@ -96,12 +96,12 @@ Import options:
 3. Subset (specify split or max_samples)
 ```
 
-For **video/MCAP/robotics datasets**:
+For **video/temporal datasets**:
 ```
 Import options:
 1. Video files (recommended) - preserves temporal continuity
 2. Individual frames - extract as images
-3. Video + sensor metadata as frame fields
+3. Video + metadata as frame-level fields
 ```
 
 For **multi-format datasets** (has both COCO and YOLO):
