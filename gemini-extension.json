@@ -1,0 +1,13 @@
+{
+  "name": "fiftyone-skills",
+  "description": "FiftyOne computer vision dataset management with 80+ operators for import, export, inference, evaluation, visualization, and plugin development.",
+  "version": "1.0.3",
+  "contextFileName": "AGENTS.md",
+  "mcpServers": {
+    "fiftyone": {
+      "command": "fiftyone-mcp",
+      "args": [],
+      "cwd": "${workspacePath}"
+    }
+  }
+}

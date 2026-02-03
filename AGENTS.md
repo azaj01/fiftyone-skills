@@ -268,5 +268,13 @@ Most FiftyOne skills follow this pattern:
 ## Resources
 
 - [FiftyOne Documentation](https://docs.voxel51.com)
+- [FiftyOne LLM Docs](https://docs.voxel51.com/llms.txt) - Fetch this for comprehensive FiftyOne API reference
 - [FiftyOne MCP Server](https://github.com/voxel51/fiftyone-mcp-server)
 - [FiftyOne Plugins](https://github.com/voxel51/fiftyone-plugins)
+- [VOODO Design System](https://voodo.dev.fiftyone.ai/llms.txt) - Fetch this for React component documentation
+
+## External Documentation
+
+When you need detailed FiftyOne API information beyond what's in the skills, fetch:
+- `https://docs.voxel51.com/llms.txt` - Complete FiftyOne documentation for LLMs
+- `https://voodo.dev.fiftyone.ai/llms.txt` - VOODO React component library docs
