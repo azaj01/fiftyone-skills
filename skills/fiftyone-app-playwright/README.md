@@ -14,6 +14,7 @@ When prompted, select **fiftyone-app-playwright** from the menu.
 
 - [FiftyOne](https://docs.voxel51.com/getting_started/install.html)
 - The [Playwright MCP server](https://github.com/microsoft/playwright-mcp) connected to your AI assistant
+  - **NOTE**: The [default config](https://playwright.dev/docs/getting-started-mcp#headed-mode) for the Playwright MCP uses 'headed' mode, meaning a browser will launch; if the optional `--headless` flag is enabled, no browser will open and users will need to navigate to `localhost:<PORT>` to observe the session.
 
 ## Usage
 
