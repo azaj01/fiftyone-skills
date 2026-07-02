@@ -74,6 +74,8 @@ Slower (~2 s) but zero Python-side plumbing. Note: `Reload samples from the data
 - **Non-persistent clones with a pre-delete guard** (the bundled launcher does this). They do NOT auto-delete on ungraceful crash — they linger in MongoDB until the next run's guard removes them.
 - Run detached: `nohup python scripts/launch_app.py --source <dataset> --clone <clone-name> --port 5151 > /tmp/fo_app.log 2>&1 &`. (`nohup` doesn't prevent the rule-1 crash; it just insulates from shell signal noise.)
 - **Health check between phases:** `curl -s -o /dev/null -w "%{http_code}" localhost:5151` + `ps -p $PID` — detect silent crashes early.
+- **Always `remote=True`**: Prevents a duplicate OS-browser tab on every navigate; drive the App through the Playwright MCP browser at `http://localhost:5151`.
+- **If no window opens by itself tell the user where to watch**: After the health check passes, report the App URL so the user can open it in their own browser as a passive viewer (watch, don't click, while automation is running). Whether the Playwright MCP browser itself is visible is fixed at MCP-server startup (`@playwright/mcp` is headed unless started with `--headless`, default configuration is for 'headed' mode) — the skill works either way; don't attempt to change it mid-session.
 
 ---
 
