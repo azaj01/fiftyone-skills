@@ -61,6 +61,7 @@ Skills bridge the gap between natural language and FiftyOne's 80+ operators, pro
 | 🧩 [**Zoo Remote Model**](skills/fiftyone-zoo-remote-model/SKILL.md) | Build remote model zoo integrations that work with `register_zoo_model_source` and `dataset.apply_model` | — |
 | 🔌 [**Generate Data Lens Connector**](skills/fiftyone-generate-data-lens-connector/SKILL.md) | Generate a Data Lens connector from an external database schema (PostgreSQL, BigQuery, MySQL, etc.) | — |
 | 🎭 [**App Playwright**](skills/fiftyone-app-playwright/SKILL.md) | Drive the FiftyOne App via the Playwright MCP for operator/plugin verification, demos, and end-to-end UI automation | — |
+| 📚 [**SDK Guidance**](skills/fiftyone-sdk-guidance/SKILL.md) | Answer FiftyOne SDK and docs questions with live documentation search, or provide the SDK path when no operator exists | — |
 
 ## Quick Start
 
