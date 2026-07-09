@@ -1,6 +1,6 @@
 ---
 name: fiftyone-sdk-guidance
-description: Use when the user asks how to do something in the FiftyOne Python SDK, asks a docs question, or when no skill or operator is available to accomplish their goal, including requests like "how do I do X in Python", "show me the SDK for filtering", "there's no operator for this, can I do it in code", "what's the API for embeddings", "write me a Python script to do Y". Searches live FiftyOne documentation via an optional Kapa.ai-powered MCP connection and returns runnable code examples, falling back to training knowledge when that connection isn't available.
+description: Answers FiftyOne Python SDK questions with accurate, runnable code. Use when the user asks how to do something in the FiftyOne Python SDK, asks a docs question, no skill or operator covers their goal, or the agent is unsure of the correct FiftyOne method, argument, or field path while writing code — e.g. "how do I do X in Python", "show me the SDK for filtering", "there's no operator for this, can I do it in code", "what's the API for embeddings", "write me a Python script to do Y".
 ---
 
 # FiftyOne SDK Guidance
@@ -15,7 +15,7 @@ Answers FiftyOne SDK and docs questions by searching live documentation and retu
 ```
 search_fifty_one_knowledge_sources(query="How do I <user goal> in the FiftyOne Python SDK?")
 ```
-FiftyOne's API changes frequently. Training knowledge may be outdated. Call `search_fifty_one_knowledge_sources` for every FiftyOne-specific question before answering.
+FiftyOne's API changes frequently. Training knowledge may be outdated. Call `search_fifty_one_knowledge_sources` (the `fiftyone-docs` MCP tool) for every FiftyOne-specific question before answering. If it isn't available, see Directive 6 for the fallback order.
 
 **The query must be a complete natural-language sentence, not keywords.** This tool does semantic retrieval, not keyword search; its own schema requires "a single, well-formed natural-language query" that "must be a complete sentence." `query="filter confidence Python"` retrieves worse matches than `query="How do I filter detections by confidence threshold in the FiftyOne Python SDK?"`.
 
@@ -35,7 +35,7 @@ SDK questions may need at least 2–3 searches to find the right method, argumen
 If the docs search doesn't return a clear answer, say so. Do not fabricate, assume, or guess methods that look plausible.
 
 ### 6. Degrade gracefully when the docs tool isn't connected
-This skill has no hard MCP dependency. If `search_fifty_one_knowledge_sources` isn't available in the current session, answer from training knowledge and say so; never block the user on a missing connection.
+This skill has no hard MCP dependency. If `search_fifty_one_knowledge_sources` isn't available in the current session: if a web-search or web-fetch tool is available in your environment, use it to query `https://docs.voxel51.com` directly before falling back further. Otherwise, answer from training knowledge and say so; never block the user on a missing connection.
 
 ### 7. Offer to self-install the docs connection, don't just tell the user to do it
 The first time this skill triggers and `search_fifty_one_knowledge_sources` isn't available, don't just leave the user to figure out setup themselves.
@@ -156,51 +156,40 @@ What would you like to do next?
 
 ## Common Use Cases
 
-### "How do I filter by label confidence in Python?"
+### "I want to modify my model's weights directly using FiftyOne."
 
 ```
-search_fifty_one_knowledge_sources(query="How do I filter detections by confidence threshold in the FiftyOne Python SDK?")
+search_fifty_one_knowledge_sources(query="Can I update or modify a model's weights using the FiftyOne Python SDK?")
 ```
-
-```python
-import fiftyone as fo
-from fiftyone import ViewField as F
-
-dataset = fo.load_dataset("my-dataset")
-view = dataset.filter_labels("ground_truth", F("confidence") > 0.7)
+FiftyOne is a dataset and results curation tool; it doesn't train or modify models. Say so plainly and point to the right tool instead of improvising an API:
 ```
-
-### "There's no operator for exporting, how do I export from the SDK?"
-
-```
-search_fifty_one_knowledge_sources(query="How do I export a FiftyOne dataset to COCO format using the Python SDK?")
-```
-
-```python
-import fiftyone as fo
-
-dataset = fo.load_dataset("my-dataset")
-dataset.export(
-    export_dir="/path/to/export",
-    dataset_type=fo.types.COCODetectionDataset,
-    label_field="ground_truth",
-)
+"FiftyOne doesn't provide APIs for updating model weights; that's outside its scope.
+Update the weights with your training framework (e.g. PyTorch, TensorFlow) directly, then
+load the updated model back into FiftyOne with `dataset.apply_model(...)` to regenerate predictions."
 ```
 
 ### "How do I compute embeddings without a plugin?"
 
 ```
-search_fifty_one_knowledge_sources(query="How do I compute embeddings on a FiftyOne dataset from the Python SDK without using a plugin?")
-search_fifty_one_knowledge_sources(query="How does fiftyone.brain.compute_similarity work?")
+search_fifty_one_knowledge_sources(query="How can I use the FiftyOne App to compute embeddings on my dataset?")
+```
+Computing embeddings from the App is a FiftyOne Enterprise feature; open-source FiftyOne needs the Python SDK instead. Search for the SDK path:
+```
+search_fifty_one_knowledge_sources(query="How do I compute embeddings on a FiftyOne dataset using the Python SDK?")
+search_fifty_one_knowledge_sources(query="What's the difference between compute_embeddings and compute_patch_embeddings?")
+```
+Do you want patch embeddings or image-level embeddings? If your dataset has localized annotations (detections, polylines, segmentation masks), patch embeddings are usually the right choice; for whole-image similarity or near-duplicate detection, use image-level embeddings.
+```
+search_fifty_one_knowledge_sources(query="What are the required and optional arguments for the compute_embeddings method?")
 ```
 
 ```python
 import fiftyone as fo
-import fiftyone.brain as fob
 
 dataset = fo.load_dataset("my-dataset")
-fob.compute_similarity(dataset, model="clip-vit-base32", brain_key="clip_sim")
+dataset.compute_embeddings(model="clip-vit-base32-torch", embeddings_field="embeddings")
 ```
+`compute_embeddings` writes one embedding per sample to `embeddings_field`; use `compute_patch_embeddings` instead if you need one embedding per label/patch (e.g. per detection) rather than per image.
 
 ### "How do I split my dataset in Python?"
 
@@ -220,6 +209,7 @@ split = int(len(ids) * 0.8)
 train_view = dataset.select(ids[:split])
 val_view = dataset.select(ids[split:])
 ```
+This is a plain random shuffle over sample IDs; refine the `ids` list first for stratified or filtered splits.
 
 ---
 
@@ -253,7 +243,7 @@ Show the low-level SDK call that gives them full control.
 
 **"`search_fifty_one_knowledge_sources` is not available"**
 
-No Kapa.ai MCP server is connected in this session; this tool is optional, not a hard requirement. Apply Directive 7: offer to add it automatically (Claude Code), or hand the user the manual config snippet for their assistant (other assistants). Until it's connected, answer using training knowledge but note the limitation:
+No Kapa.ai MCP server is connected in this session; this tool is optional, not a hard requirement. Apply Directive 7: offer to add it automatically (Claude Code), or hand the user the manual config snippet for their assistant (other assistants). In the meantime, follow the fallback order in Directive 6: if a web-search or web-fetch tool is available, query `https://docs.voxel51.com` directly; otherwise answer using training knowledge but note the limitation:
 ```
 "I can't search the live docs right now, so I'll answer from training knowledge.
 For the most accurate and up-to-date API reference, check docs.voxel51.com."
