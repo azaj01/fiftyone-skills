@@ -23,16 +23,16 @@ FiftyOne's API changes frequently. Training knowledge may be outdated. Call `sea
 All code examples must be complete enough to run. Include imports. Use real FiftyOne API patterns from the search results, not invented method names. Cite the `source_url` of the result(s) you drew from so the user can verify against live docs.
 
 ### 3. For fallback scenarios, acknowledge the gap explicitly
-If the user was trying to use the App or operators and that path is unavailable, say so clearly:
+If the user is attempting to perform an unsupported or limited feature in the FiftyOne Application or operators, state clearly that this is the case and provide a supported route using the Python SDK where available:
 ```
 "There's no built-in operator for this; here's how to do it with the Python SDK instead."
 ```
 
 ### 4. If one search isn't enough, search again with a refined query
-SDK questions often need 2–3 searches to find the right method, argument, or pattern. Search until you have a concrete answer.
+SDK questions may need at least 2–3 searches to find the right method, argument, or pattern. Search until you have a concrete answer or have concrete evidence that the feature is not available or included in the documentation.
 
 ### 5. Never make up API method names or field paths
-If the docs search doesn't return a clear answer, say so. Do not fabricate methods that look plausible.
+If the docs search doesn't return a clear answer, say so. Do not fabricate, assume, or guess methods that look plausible.
 
 ### 6. Degrade gracefully when the docs tool isn't connected
 This skill has no hard MCP dependency. If `search_fifty_one_knowledge_sources` isn't available in the current session, answer from training knowledge and say so; never block the user on a missing connection.
@@ -101,7 +101,7 @@ The tool always returns a fixed number of results (`{"results": [{"source_url": 
 
 ### Step 3. Build the code response
 
-From the search results, construct a runnable example:
+From the search results, construct a runnable example. REFERENCE: an example constructed, after fetching all relevant FiftyOne documentation, for a user wanting a FiftyOne view for the dataset's ground truth labels that have a confidence value of more than 0.7:
 
 ```python
 import fiftyone as fo
@@ -122,11 +122,14 @@ Always:
 - Use `import fiftyone as fo` at the top
 - Use real method names from the search results
 - Show the user how to apply this to their specific dataset context
-- Cite the `source_url`(s) the code was drawn from, e.g. `**Source:** [Confidence thresholding in Python](https://docs.voxel51.com/...)`
+- Cite the `source_url`(s) the code was drawn from, e.g. `**Source:** [Confidence thresholding in Python](https://docs.voxel51.com/...)`; all URLs must be:
+  * valid, HTTP 200 response
+  * specific, link to the relevant section of the page, never point to top-level URLs and make the user search for where the information was found
+  * relevant, URLs must be relevant to the topic/query, a valid and specific URL isn't helpful if it's not relevant to the user's goal/query
 
 ### Step 4. Explain the key methods
 
-After the code block, briefly explain the 1–2 most important methods:
+After the code block, briefly explain the most salient FiftyOne methods:
 - What they do
 - Any required arguments
 - Common variations (e.g. `filter_labels` vs `match`)
@@ -230,7 +233,7 @@ The user tried to use an operator and got "operator not found" or the plugin is 
 "That feature requires the @voxel51/panels plugin, which isn't enabled in your deployment.
 Here's how to accomplish the same thing using the FiftyOne Python SDK:"
 ```
-Then search and return the SDK path.
+Then execute a search query in the FiftyOne documentation and return the SDK path.
 
 ### Operator ran but didn't produce expected results
 
