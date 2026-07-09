@@ -403,6 +403,24 @@ This repository contains skills for computer vision workflows using FiftyOne and
 **Bundled scripts:**
 - `scripts/launch_app.py` — parameterized launcher implementing the trigger-file refresh loop
 
+### FiftyOne SDK Guidance (`fiftyone-sdk-guidance/`)
+
+**When to use:** User asks how to do something in the FiftyOne Python SDK, asks a docs question, or no operator/skill exists for their goal.
+
+**Instructions:** Load the skill file at `skills/fiftyone-sdk-guidance/SKILL.md`
+
+**Key requirements:**
+- *(Optional)* Kapa.ai MCP server connected to the agent, Voxel51's public docs bot at `https://voxel51.mcp.kapa.ai`, OAuth login with your own Google/GitHub account, no API key
+- Falls back to training knowledge if not connected
+- On Claude Code, the skill offers to connect it automatically (`claude mcp add`) the first time it's needed, pending user confirmation; no manual pre-install step required
+
+**Workflow summary:**
+1. Understand the user's SDK goal (direct question or operator fallback)
+2. Search live docs with `search_fifty_one_knowledge_sources`, refining the query if needed
+3. Build a runnable Python code example from the search results
+4. Explain the 1–2 most important methods used
+5. Offer follow-up options
+
 ## Prerequisites
 
 All skills require:

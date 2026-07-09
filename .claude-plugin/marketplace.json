@@ -143,6 +143,14 @@
       "emoji": "🎭",
       "category": "QA",
       "description": "Drive the FiftyOne App via the Playwright MCP for operator/plugin verification, demo or screencast recording, and end-to-end UI automation against `fo.launch_app(...)`. Use when automating the FiftyOne App, recording an operator demo, or debugging a session that silently dies after a UI action (the `browser_navigate`-after-`reload_dataset` crash), covering launcher patterns (`remote=True`, trigger-file IPC), MUI input/dropdown gotchas, `data-cy` selectors, and scoped cleanup."
+    },
+    {
+      "name": "fiftyone-sdk-guidance",
+      "source": "./skills/fiftyone-sdk-guidance",
+      "skills": "./",
+      "emoji": "📚",
+      "category": "Support",
+      "description": "Answers FiftyOne SDK and docs questions by searching live FiftyOne documentation and returning accurate, runnable Python code. Use when asking how to do something in the FiftyOne Python SDK, when no operator or skill exists for a goal, or as a fallback when the App/plugin path is unavailable. Optionally connects to Voxel51's public Kapa.ai docs MCP server (OAuth, no API key) for live search; falls back to training knowledge otherwise."
     }
   ]
 }
