@@ -44,8 +44,8 @@ Branch naming: `feat/<skill-name>` for new skills, `fix/<skill-name>` for improv
 cp -r skills/fiftyone-find-duplicates skills/fiftyone-my-skill
 ```
 
-For simple skills, `fiftyone-find-duplicates` is a good template.
-For MCP-heavy skills, use `fiftyone-dataset-import`.
+For simple skills, `fiftyone-find-duplicates` is a good template.  
+For MCP-heavy skills, use `fiftyone-dataset-import`.  
 For plugin development, use `fiftyone-develop-plugin`.
 
 ### 4. Write your `SKILL.md`
@@ -221,3 +221,7 @@ If your skill works with a specific assistant only, note it in the `SKILL.md` pr
 - **Feedback**: Ask your AI assistant `"Help me submit feedback about [issue]"` to auto-generate a report
 
 <div align="center">
+
+Copyright 2017–2026, Voxel51, Inc. · [Apache 2.0 License](LICENSE)
+
+</div>
