@@ -57,6 +57,7 @@ See the [Skill Structure](#skill-structure) section below for the required forma
 Load the skill and run through your workflow end-to-end. The skill should guide the agent correctly without manual correction.
 
 **Claude Code:**
+
 ```bash
 /plugin install fiftyone-my-skill@fiftyone-skills
 ```
@@ -147,22 +148,40 @@ description: One to two sentences describing when to use this skill and what it 
 
 The `description` field is what triggers skill activation — write it to match how a user would naturally phrase the task.
 
+
+### Skill Description Optimization Guide
+
+The `description` field in the `SKILL.md` YAML frontmatter determines when an AI assistant loads the skill. Writing precise descriptions prevents both **false positives** (loading when irrelevant) and **false negatives** (failing to trigger when needed).
+
+#### Best Practices
+
+- **Specify triggering intent:** Clearly describe *when* the agent should load this skill and *what* task it performs. Include realistic keywords or phrases that users are likely to use.
+- **Avoid overly broad terms:** Phrases like *"helps with dataset tasks"* or *"analyzes computer vision"* can cause unwanted triggers for unrelated requests.
+- **Avoid overly narrow terms:** Restricting the description to internal function names or exact wording may prevent the skill from loading when users ask in natural language.
+- **Include negative boundaries when helpful:** If your skill overlaps with another (for example, dataset export vs. dataset evaluation), clarify what the skill is **not** intended for.
+
+#### Testing and Tuning Triggering Accuracy
+
+1. **Test with natural user prompts:** Try 3–5 different phrasings of the intended task and verify that the skill loads consistently.
+2. **Test edge cases:** Try related but different requests to confirm that the skill does **not** load when it shouldn't.
+3. **Iterate:** If the skill triggers too often, make the description more specific. If it fails to trigger for valid requests, broaden the wording by adding common user-intent keywords and synonyms.
+
 ### Required sections
 
-| Section | Purpose |
-|---------|---------|
-| **Key Directives** | `ALWAYS`/`NEVER` rules the agent must follow |
-| **Complete Workflow** | Step-by-step instructions with code examples |
-| **Troubleshooting** | Common errors, their causes, and fixes |
+| Section                     | Purpose                                          |
+| --------------------------- | ------------------------------------------------ |
+| **Key Directives**    | `ALWAYS`/`NEVER` rules the agent must follow |
+| **Complete Workflow** | Step-by-step instructions with code examples     |
+| **Troubleshooting**   | Common errors, their causes, and fixes           |
 
 ### Recommended sections
 
-| Section | Purpose |
-|---------|---------|
-| Available Tools | Table of MCP tools or operators used |
-| Common Use Cases | 2–3 real-world examples |
-| Best Practices | Tips for reliable results |
-| Resources | Links to docs, plugins, or related skills |
+| Section          | Purpose                                   |
+| ---------------- | ----------------------------------------- |
+| Available Tools  | Table of MCP tools or operators used      |
+| Common Use Cases | 2–3 real-world examples                  |
+| Best Practices   | Tips for reliable results                 |
+| Resources        | Links to docs, plugins, or related skills |
 
 ### Quality bar
 
@@ -186,12 +205,12 @@ Before submitting, verify your skill:
 
 Skills in this repo are tested against:
 
-| Assistant | Install method |
-|-----------|---------------|
-| Claude Code | `/plugin install` |
-| Cursor | `.cursor-plugin/` |
-| Gemini CLI | `gemini extensions install` |
-| Codex, Goose, Amp, and more | Universal installer |
+| Assistant                   | Install method                |
+| --------------------------- | ----------------------------- |
+| Claude Code                 | `/plugin install`           |
+| Cursor                      | `.cursor-plugin/`           |
+| Gemini CLI                  | `gemini extensions install` |
+| Codex, Goose, Amp, and more | Universal installer           |
 
 If your skill works with a specific assistant only, note it in the `SKILL.md` prerequisites.
 
